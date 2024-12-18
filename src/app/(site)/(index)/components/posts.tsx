@@ -1,8 +1,13 @@
 "use client";
 
 import { PaginationControls } from "@/components/pagination-controls";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { H1 } from "@/components/ui/typography";
 import homepageNuqs from "@/lib/nuqs/homepage";
+import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { PostItem } from "./post-item";
 
 const DUMMY_POST: Post = {
@@ -28,11 +33,37 @@ const DUMMY_CATEGORY: Category = {
 };
 
 export default function Posts({ page, q }: { page: number; q: string }) {
+  const [query, setQuery] = useState(q);
+  const router = useRouter();
+
   const TOTAL_PAGES = 10; // Bu değer API'den gelmeli
 
   return (
     <div className="space-y-6">
-      <H1>Yazılar</H1>
+      <div className="flex items-center justify-between gap-6">
+        <H1>Yazılar</H1>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            router.push(
+              `/${homepageNuqs.serializer({
+                page: null,
+                q: query.trim() === "" ? null : query.trim(),
+              })}`
+            );
+          }}
+          className="flex justify-center items-center gap-2"
+        >
+          <Input
+            placeholder="Yazılarda ara..."
+            onChange={(e) => setQuery(e.target.value)}
+            value={query}
+          />
+          <Button className="shrink-0" size="icon">
+            <Search />
+          </Button>
+        </form>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
           <PostItem key={i} post={DUMMY_POST} category={DUMMY_CATEGORY} />
@@ -44,7 +75,7 @@ export default function Posts({ page, q }: { page: number; q: string }) {
         generatePageUrl={(page) => {
           return `/${homepageNuqs.serializer({
             page: page === 1 ? null : page,
-            q,
+            q: query,
           })}`;
         }}
       />
