@@ -2,6 +2,7 @@
 
 import { PaginationControls } from "@/components/pagination-controls";
 import { H1 } from "@/components/ui/typography";
+import homepageNuqs from "@/lib/nuqs/homepage";
 import { PostItem } from "./post-item";
 
 const DUMMY_POST: Post = {
@@ -26,7 +27,7 @@ const DUMMY_CATEGORY: Category = {
   updatedAt: new Date(),
 };
 
-export default function Posts() {
+export default function Posts({ page, q }: { page: number; q: string }) {
   const TOTAL_PAGES = 10; // Bu değer API'den gelmeli
 
   return (
@@ -38,9 +39,14 @@ export default function Posts() {
         ))}
       </div>
       <PaginationControls
-        currentPage={3}
+        currentPage={page}
         totalPages={TOTAL_PAGES}
-        generatePageUrl={(page) => `/?page=${page}`}
+        generatePageUrl={(page) => {
+          return `/${homepageNuqs.serializer({
+            page: page === 1 ? null : page,
+            q,
+          })}`;
+        }}
       />
     </div>
   );
