@@ -1,3 +1,6 @@
+"use client";
+
+import { PaginationControls } from "@/components/pagination-controls";
 import { H1 } from "@/components/ui/typography";
 import { PostItem } from "./post-item";
 
@@ -24,14 +27,22 @@ const DUMMY_CATEGORY: Category = {
 };
 
 export default function Posts() {
+  const ITEMS_PER_PAGE = 6;
+  const TOTAL_PAGES = 10; // Bu değer API'den gelmeli
+
   return (
     <div className="space-y-6">
       <H1>Yazılar</H1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: ITEMS_PER_PAGE }).map((_, i) => (
           <PostItem key={i} post={DUMMY_POST} category={DUMMY_CATEGORY} />
         ))}
       </div>
+      <PaginationControls
+        currentPage={3}
+        totalPages={TOTAL_PAGES}
+        generatePageUrl={(page) => `/?page=${page}`}
+      />
     </div>
   );
 }
