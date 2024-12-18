@@ -29,7 +29,8 @@ const footerLinks = [
     title: "Sayfalar",
     links: [
       { label: "Ana Sayfa", href: "/" },
-      { label: "Blog", href: "/blog" },
+      { label: "Hakkımızda", href: "/about" },
+      { label: "İletişim", href: "/contact" },
     ],
   },
   {
