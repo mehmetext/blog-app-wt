@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import Header from "@/components/header";
 
 export default function SiteLayout({
@@ -9,7 +10,7 @@ export default function SiteLayout({
     <>
       <Header />
       {children}
-      <footer>footer</footer>
+      <Footer />
     </>
   );
 }

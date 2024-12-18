@@ -14,10 +14,6 @@ const routes = [
     label: "Blog",
     href: "/blog",
   },
-  {
-    label: "Hakkımda",
-    href: "/about",
-  },
 ];
 
 export default function Header() {
