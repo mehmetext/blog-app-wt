@@ -56,7 +56,7 @@ export function PostItem({ post }: PostItemProps) {
       </CardContent>
       <CardFooter className="p-0">
         <Link
-          href={`/posts/${post.slug}`}
+          href={`/${post.category.slug}/${post.slug}`}
           className={cn(
             buttonVariants({ variant: "outline" }),
             "w-full shadow-none border-none rounded-none"

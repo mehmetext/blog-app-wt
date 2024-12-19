@@ -11,6 +11,7 @@ import {
 import { Home } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import React from "react";
 
 interface BreadcrumbItem {
   label: string;
@@ -47,16 +48,18 @@ export function BreadcrumbNav({ items = [] }: BreadcrumbNavProps) {
         {items.length > 0 && <BreadcrumbSeparator />}
 
         {items.map((item, index) => (
-          <BreadcrumbItem key={item.href}>
-            {index === items.length - 1 ? (
-              <BreadcrumbPage>{item.label}</BreadcrumbPage>
-            ) : (
-              <BreadcrumbLink asChild>
-                <Link href={item.href}>{item.label}</Link>
-              </BreadcrumbLink>
-            )}
+          <React.Fragment key={item.href}>
+            <BreadcrumbItem>
+              {index === items.length - 1 ? (
+                <BreadcrumbPage>{item.label}</BreadcrumbPage>
+              ) : (
+                <BreadcrumbLink asChild>
+                  <Link href={item.href}>{item.label}</Link>
+                </BreadcrumbLink>
+              )}
+            </BreadcrumbItem>
             {index < items.length - 1 && <BreadcrumbSeparator />}
-          </BreadcrumbItem>
+          </React.Fragment>
         ))}
       </BreadcrumbList>
     </Breadcrumb>
