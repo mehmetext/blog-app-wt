@@ -78,7 +78,7 @@ export default function Header() {
                           className={cn(
                             "text-sm font-medium transition-colors hover:text-primary",
                             pathname === subRoute.href
-                              ? "text-foreground"
+                              ? "text-foreground bg-accent"
                               : "text-muted-foreground"
                           )}
                         >
@@ -153,7 +153,7 @@ export default function Header() {
                             className={cn(
                               "text-sm font-medium transition-colors hover:text-primary",
                               pathname === subRoute.href
-                                ? "text-foreground"
+                                ? "text-foreground bg-accent"
                                 : "text-muted-foreground"
                             )}
                             onClick={() => setIsMenuOpen(false)}
