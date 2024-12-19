@@ -3,15 +3,24 @@
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Menu } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 const routes: NavRoute[] = [
   { label: "Ana Sayfa", href: "/" },
   { label: "Hakkımızda", href: "/about" },
-  { label: "Kategoriler", subRoutes: [] },
+  {
+    label: "Kategoriler",
+    subRoutes: [{ href: "/web-gelistirme", label: "Web Geliştirme" }],
+  },
 ];
 
 export default function Header() {
@@ -32,7 +41,7 @@ export default function Header() {
         <nav className="hidden md:flex items-center space-x-6">
           {routes.map((route, i) => (
             <React.Fragment key={i}>
-              {route.href ? (
+              {route.href && !route.subRoutes ? (
                 <Link
                   key={route.href}
                   href={route.href}
@@ -45,7 +54,41 @@ export default function Header() {
                 >
                   {route.label}
                 </Link>
-              ) : null}
+              ) : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    className={cn(
+                      "flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary",
+                      pathname === route.href
+                        ? "text-foreground"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    {route.label} <ChevronDown className="w-4 h-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    {route.subRoutes?.map((subRoute) => (
+                      <DropdownMenuItem
+                        key={subRoute.href}
+                        asChild
+                        className="cursor-pointer"
+                      >
+                        <Link
+                          href={subRoute.href}
+                          className={cn(
+                            "text-sm font-medium transition-colors hover:text-primary",
+                            pathname === subRoute.href
+                              ? "text-foreground"
+                              : "text-muted-foreground"
+                          )}
+                        >
+                          {subRoute.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </React.Fragment>
           ))}
         </nav>
@@ -72,7 +115,7 @@ export default function Header() {
           <nav className="container py-4 flex flex-col space-y-4">
             {routes.map((route, i) => (
               <React.Fragment key={i}>
-                {route.href ? (
+                {route.href && !route.subRoutes ? (
                   <Link
                     key={route.href}
                     href={route.href}
@@ -86,7 +129,42 @@ export default function Header() {
                   >
                     {route.label}
                   </Link>
-                ) : null}
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      className={cn(
+                        "flex items-center gap-1 text-sm font-medium transition-colors hover:text-primary px-2 py-1",
+                        pathname === route.href
+                          ? "text-foreground"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {route.label} <ChevronDown className="w-4 h-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-[var(--radix-dropdown-menu-trigger-width)]">
+                      {route.subRoutes?.map((subRoute) => (
+                        <DropdownMenuItem
+                          key={subRoute.href}
+                          asChild
+                          className="cursor-pointer"
+                        >
+                          <Link
+                            href={subRoute.href}
+                            className={cn(
+                              "text-sm font-medium transition-colors hover:text-primary",
+                              pathname === subRoute.href
+                                ? "text-foreground"
+                                : "text-muted-foreground"
+                            )}
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {subRoute.label}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </React.Fragment>
             ))}
           </nav>
