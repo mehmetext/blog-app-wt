@@ -7,7 +7,7 @@ import {
 
 const searchParams = {
   page: parseAsInteger.withDefault(1).withOptions({ clearOnDefault: true }),
-  q: parseAsString,
+  q: parseAsString.withDefault(""),
 };
 
 const cache = createSearchParamsCache(searchParams);
