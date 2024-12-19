@@ -1,4 +1,4 @@
-import { Badge } from "@/components/ui/badge";
+import { badgeVariants } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -32,9 +32,16 @@ export function PostItem({ post }: PostItemProps) {
       </CardHeader>
       <CardContent className="space-y-4 p-4">
         <div className="space-y-2">
-          <Badge variant="outline">{post.category.name}</Badge>
+          <Link
+            href={`/${post.category.slug}`}
+            className={cn(badgeVariants({ variant: "outline" }))}
+          >
+            {post.category.name}
+          </Link>
           <h3 className="font-semibold text-xl line-clamp-2 group-hover:text-primary transition-colors">
-            {post.title}
+            <Link href={`/${post.category.slug}/${post.slug}`}>
+              {post.title}
+            </Link>
           </h3>
         </div>
         <p className="text-muted-foreground line-clamp-2">{post.content}</p>

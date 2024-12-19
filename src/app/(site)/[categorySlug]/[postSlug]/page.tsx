@@ -9,6 +9,21 @@ import { tr } from "date-fns/locale";
 import { Calendar, MessageCircle, User } from "lucide-react";
 import Image from "next/image";
 import Markdown from "react-markdown";
+import Comments from "./components/Comments";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ categorySlug: string; postSlug: string }>;
+}) {
+  const { postSlug } = await params;
+
+  const post = await getPost(postSlug);
+
+  return {
+    title: `${post.title} - Blog App`,
+  };
+}
 
 export default async function PostPage({
   params,
@@ -70,6 +85,8 @@ export default async function PostPage({
             <Markdown>{post.content}</Markdown>
           </CardContent>
         </Card>
+
+        <Comments />
       </article>
     </PageContainer>
   );
