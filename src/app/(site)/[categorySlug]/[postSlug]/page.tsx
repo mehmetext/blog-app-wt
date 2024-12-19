@@ -9,7 +9,7 @@ import { tr } from "date-fns/locale";
 import { Calendar, MessageCircle, User } from "lucide-react";
 import Image from "next/image";
 import Markdown from "react-markdown";
-import Comments from "./components/Comments";
+import Comments from "./components/comments";
 
 export async function generateMetadata({
   params,

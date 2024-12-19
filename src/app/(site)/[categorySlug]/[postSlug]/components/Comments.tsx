@@ -10,7 +10,7 @@ export default function Comments() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Yorumlar ({4})</CardTitle>
+        <CardTitle>Yorumlar (5)</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Yorum Formu */}
@@ -26,7 +26,7 @@ export default function Comments() {
 
         {/* Yorumlar Listesi */}
         <div className="space-y-4">
-          {Array.from({ length: 4 }).map((_, index) => (
+          {Array.from({ length: 5 }).map((_, index) => (
             <div
               key={index}
               className="border rounded-lg p-4 space-y-2 bg-muted/40"
