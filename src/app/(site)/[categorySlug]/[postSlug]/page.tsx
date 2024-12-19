@@ -6,7 +6,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { H1 } from "@/components/ui/typography";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
-import { Calendar, MessageCircle, User } from "lucide-react";
+import {
+  Calendar,
+  Copy,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Mail,
+  MessageCircle,
+  Twitter,
+  User,
+} from "lucide-react";
 import Image from "next/image";
 import Markdown from "react-markdown";
 import Comments from "./components/comments";
@@ -70,21 +80,34 @@ export default async function PostPage({
           </div>
         </div>
 
-        <div className="aspect-video relative overflow-hidden rounded-xl">
-          <Image
-            src={post.coverImage}
-            alt={post.title}
-            fill
-            className="object-cover"
-            priority
-          />
-        </div>
+        <div className="flex flex-col gap-8 relative">
+          <div className="aspect-video relative overflow-hidden rounded-xl">
+            <Image
+              src={post.coverImage}
+              alt={post.title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
 
-        <Card>
-          <CardContent className="prose prose-stone dark:prose-invert max-w-none p-6">
-            <Markdown>{post.content}</Markdown>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardContent className="prose prose-stone dark:prose-invert max-w-none p-6">
+              <Markdown>{post.content}</Markdown>
+            </CardContent>
+          </Card>
+
+          <div className="absolute right-[calc(100%+1rem)] top-0 bottom-0">
+            <div className="sticky top-1/4 flex flex-col gap-4">
+              <Twitter />
+              <Facebook />
+              <Linkedin />
+              <Instagram />
+              <Mail />
+              <Copy />
+            </div>
+          </div>
+        </div>
 
         <Comments />
       </article>
