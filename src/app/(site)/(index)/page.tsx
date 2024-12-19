@@ -1,3 +1,4 @@
+import { getPosts } from "@/actions";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import PageContainer from "@/components/page-container";
 import homepageNuqs from "@/lib/nuqs/homepage";
@@ -10,11 +11,12 @@ export default async function HomePage({
   searchParams: Promise<SearchParams>;
 }) {
   const { page, q } = await homepageNuqs.cache.parse(searchParams);
+  const posts = await getPosts();
 
   return (
     <PageContainer>
       <BreadcrumbNav />
-      <Posts page={page} q={q} />
+      <Posts page={page} q={q} posts={posts} />
     </PageContainer>
   );
 }

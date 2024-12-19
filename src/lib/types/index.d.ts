@@ -28,6 +28,7 @@ interface Post {
 
   authorId: string;
   categoryId: string;
+  category: Pick<Category, "id" | "name" | "slug">;
 
   createdAt: Date;
   updatedAt: Date;

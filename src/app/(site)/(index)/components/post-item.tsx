@@ -15,10 +15,9 @@ import Link from "next/link";
 
 interface PostItemProps {
   post: Post;
-  category: Category;
 }
 
-export function PostItem({ post, category }: PostItemProps) {
+export function PostItem({ post }: PostItemProps) {
   return (
     <Card className="group overflow-hidden">
       <CardHeader className="p-0">
@@ -33,7 +32,7 @@ export function PostItem({ post, category }: PostItemProps) {
       </CardHeader>
       <CardContent className="space-y-4 p-4">
         <div className="space-y-2">
-          <Badge variant="outline">{category.name}</Badge>
+          <Badge variant="outline">{post.category.name}</Badge>
           <h3 className="font-semibold text-xl line-clamp-2 group-hover:text-primary transition-colors">
             {post.title}
           </h3>
