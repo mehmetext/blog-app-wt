@@ -2,6 +2,7 @@ import { getPost } from "@/actions";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import PageContainer from "@/components/page-container";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { H1 } from "@/components/ui/typography";
 import { formatDistanceToNow } from "date-fns";
@@ -97,14 +98,26 @@ export default async function PostPage({
             </CardContent>
           </Card>
 
-          <div className="absolute right-[calc(100%+1rem)] top-0 bottom-0">
-            <div className="sticky top-1/4 flex flex-col gap-4">
-              <Twitter />
-              <Facebook />
-              <Linkedin />
-              <Instagram />
-              <Mail />
-              <Copy />
+          <div className="lg:absolute right-[calc(100%+1rem)] top-0 bottom-0">
+            <div className="sticky top-1/4 flex flex-row lg:flex-col gap-4">
+              <Button size="icon" variant="ghost">
+                <Twitter />
+              </Button>
+              <Button size="icon" variant="ghost">
+                <Facebook />
+              </Button>
+              <Button size="icon" variant="ghost">
+                <Linkedin />
+              </Button>
+              <Button size="icon" variant="ghost">
+                <Instagram />
+              </Button>
+              <Button size="icon" variant="ghost">
+                <Mail />
+              </Button>
+              <Button size="icon" variant="ghost">
+                <Copy />
+              </Button>
             </div>
           </div>
         </div>

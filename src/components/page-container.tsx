@@ -6,6 +6,8 @@ export default function PageContainer({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex-1 container flex flex-col gap-y-10">{children}</div>
+    <div className="flex-1 container flex flex-col gap-y-10 max-w-3xl">
+      {children}
+    </div>
   );
 }
