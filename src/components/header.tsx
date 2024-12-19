@@ -6,12 +6,12 @@ import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import React, { useState } from "react";
 
-const routes = [
+const routes: NavRoute[] = [
   { label: "Ana Sayfa", href: "/" },
   { label: "Hakkımızda", href: "/about" },
-  { label: "İletişim", href: "/contact" },
+  { label: "Kategoriler", subRoutes: [] },
 ];
 
 export default function Header() {
@@ -30,19 +30,23 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-6">
-          {routes.map((route) => (
-            <Link
-              key={route.href}
-              href={route.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname === route.href
-                  ? "text-foreground"
-                  : "text-muted-foreground"
-              )}
-            >
-              {route.label}
-            </Link>
+          {routes.map((route, i) => (
+            <React.Fragment key={i}>
+              {route.href ? (
+                <Link
+                  key={route.href}
+                  href={route.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary",
+                    pathname === route.href
+                      ? "text-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {route.label}
+                </Link>
+              ) : null}
+            </React.Fragment>
           ))}
         </nav>
 
@@ -66,20 +70,24 @@ export default function Header() {
       {isMenuOpen && (
         <div className="md:hidden border-t">
           <nav className="container py-4 flex flex-col space-y-4">
-            {routes.map((route) => (
-              <Link
-                key={route.href}
-                href={route.href}
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary px-2 py-1 rounded-md",
-                  pathname === route.href
-                    ? "bg-accent text-foreground"
-                    : "text-muted-foreground"
-                )}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {route.label}
-              </Link>
+            {routes.map((route, i) => (
+              <React.Fragment key={i}>
+                {route.href ? (
+                  <Link
+                    key={route.href}
+                    href={route.href}
+                    className={cn(
+                      "text-sm font-medium transition-colors hover:text-primary px-2 py-1 rounded-md",
+                      pathname === route.href
+                        ? "bg-accent text-foreground"
+                        : "text-muted-foreground"
+                    )}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {route.label}
+                  </Link>
+                ) : null}
+              </React.Fragment>
             ))}
           </nav>
         </div>

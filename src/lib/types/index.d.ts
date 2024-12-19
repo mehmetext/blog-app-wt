@@ -45,3 +45,9 @@ interface Comment {
   updatedAt: Date;
   deletedAt?: Date;
 }
+
+interface NavRoute {
+  label: string;
+  href?: string;
+  subRoutes?: { label: string; href: string }[];
+}
