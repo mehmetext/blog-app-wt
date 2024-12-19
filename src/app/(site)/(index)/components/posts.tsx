@@ -33,7 +33,7 @@ const DUMMY_CATEGORY: Category = {
 };
 
 export default function Posts({ page, q }: { page: number; q: string }) {
-  const [query, setQuery] = useState(q);
+  const [query, setQuery] = useState(q ?? "");
   const router = useRouter();
 
   const TOTAL_PAGES = 10; // Bu değer API'den gelmeli
