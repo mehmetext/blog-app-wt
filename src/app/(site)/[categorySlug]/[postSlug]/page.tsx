@@ -3,11 +3,12 @@ import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import PageContainer from "@/components/page-container";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { H1, Lead } from "@/components/ui/typography";
+import { H1 } from "@/components/ui/typography";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
 import { Calendar, MessageCircle, User } from "lucide-react";
 import Image from "next/image";
+import Markdown from "react-markdown";
 
 export default async function PostPage({
   params,
@@ -66,14 +67,7 @@ export default async function PostPage({
 
         <Card>
           <CardContent className="prose prose-stone dark:prose-invert max-w-none p-6">
-            <Lead className="mb-8">{post.content}</Lead>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-              voluptates, quod, voluptatum, quae voluptatibus quas
-              exercitationem quibusdam voluptatem quidem quos quia? Quis,
-              voluptatum. Quisquam, voluptates. Quisquam, voluptates.
-            </p>
-            {/* Buraya daha fazla içerik eklenebilir */}
+            <Markdown>{post.content}</Markdown>
           </CardContent>
         </Card>
       </article>
