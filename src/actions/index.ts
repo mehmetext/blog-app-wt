@@ -50,23 +50,25 @@ async function fetchAPI<T>(
   }
 }
 
-export const getPosts = fetchAPI<
-  (Post & {
-    category: Category;
-    author: User;
-    comments: Comment[];
-  })[]
->("posts");
+export const getPosts = async () =>
+  fetchAPI<
+    (Post & {
+      category: Category;
+      author: User;
+      comments: Comment[];
+    })[]
+  >("posts");
 
-export const getPost = fetchAPI<
-  Post & {
-    category: Category;
-    author: User;
-    comments: Comment[];
-  }
->("posts/${slug}");
+export const getPost = async (slug: string) =>
+  fetchAPI<
+    Post & {
+      category: Category;
+      author: User;
+      comments: Comment[];
+    }
+  >(`posts/${slug}`);
 
-export const getCategories = fetchAPI<Category[]>("categories");
+export const getCategories = async () => fetchAPI<Category[]>("categories");
 
-export const getCategory = (slug: string) =>
+export const getCategory = async (slug: string) =>
   fetchAPI<Category>(`categories/${slug}`);
