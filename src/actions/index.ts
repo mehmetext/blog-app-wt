@@ -24,6 +24,13 @@ export async function getPost(slug: string) {
   };
 }
 
+export async function getCategories() {
+  const categories = await fetch(`${process.env.API_URL}/api/categories`).then(
+    (res) => res.json()
+  );
+  return categories.data as Category[];
+}
+
 export async function getCategory(slug: string) {
   const category = await fetch(
     `${process.env.API_URL}/api/categories/${slug}`
