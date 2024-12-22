@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { H1 } from "@/components/ui/typography";
 import homepageNuqs from "@/lib/nuqs/homepage";
+import { Category, Post } from "@prisma/client";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,7 +18,7 @@ export default function Posts({
 }: {
   page: number;
   q: string;
-  posts: Post[];
+  posts: (Post & { categories: Category[] })[];
 }) {
   const [query, setQuery] = useState(q);
   const router = useRouter();

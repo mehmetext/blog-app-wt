@@ -1,10 +1,12 @@
 "use server";
 
+import { Category, Post } from "@prisma/client";
+
 export async function getPosts() {
   const posts = await fetch(`${process.env.API_URL}/api/posts`).then((res) =>
     res.json()
   );
-  return posts.data as Post[];
+  return posts.data as (Post & { categories: Category[] })[];
 }
 
 export async function getPost(slug: string) {

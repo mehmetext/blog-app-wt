@@ -42,7 +42,7 @@ async function main() {
   });
 
   // Create posts
-  const post1 = await prisma.post.create({
+  await prisma.post.create({
     data: {
       title: "Getting Started with Next.js",
       content: `
@@ -69,13 +69,11 @@ npx create-next-app@latest my-app
       coverImage:
         "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
       authorId: adminUser.id,
-      categories: {
-        connect: { id: webDevCategory.id },
-      },
+      categoryId: webDevCategory.id,
     },
   });
 
-  const post2 = await prisma.post.create({
+  await prisma.post.create({
     data: {
       title: "React Native Fundamentals",
       content: `
@@ -97,9 +95,7 @@ Follow these steps to set up your development environment...
       slug: "react-native-fundamentals",
       coverImage: "https://images.unsplash.com/photo-1556656793-08538906a9f8",
       authorId: regularUser.id,
-      categories: {
-        connect: { id: mobileDevCategory.id },
-      },
+      categoryId: mobileDevCategory.id,
     },
   });
 
@@ -108,17 +104,17 @@ Follow these steps to set up your development environment...
     data: [
       {
         content: "Great introduction to Next.js!",
-        postId: post1.id,
+        postId: "1",
         authorName: "John Doe",
       },
       {
         content: "This helped me get started with React Native.",
-        postId: post2.id,
+        postId: "2",
         authorName: "Jane Smith",
       },
       {
         content: "Looking forward to more tutorials!",
-        postId: post1.id,
+        postId: "1",
         authorName: "Developer123",
       },
     ],

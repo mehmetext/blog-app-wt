@@ -1,6 +1,7 @@
 import { badgeVariants } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Category, Post } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
 import { ArrowRight, Calendar, MessageCircle } from "lucide-react";
@@ -8,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface FeaturedPostProps {
-  post: Post;
+  post: Post & { category: Category };
 }
 
 export function FeaturedPost({ post }: FeaturedPostProps) {

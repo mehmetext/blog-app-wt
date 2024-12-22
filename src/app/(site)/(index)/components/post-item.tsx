@@ -7,6 +7,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Category, Post } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
 import { ArrowRight, Calendar, MessageCircle } from "lucide-react";
@@ -14,7 +15,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface PostItemProps {
-  post: Post;
+  post: Post & { category: Category };
 }
 
 export function PostItem({ post }: PostItemProps) {
