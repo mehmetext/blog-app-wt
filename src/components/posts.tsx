@@ -34,7 +34,7 @@ export default function Posts({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-6">
-        <H1>Yazılar</H1>
+        <H1>{category ? `${category.name} Yazıları` : "Yazılar"}</H1>
         <form
           onSubmit={(e) => {
             e.preventDefault();
