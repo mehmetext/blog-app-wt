@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import Markdown from "react-markdown";
 import Comments from "./components/comments";
 
@@ -45,6 +46,10 @@ export default async function PostPage({
 }) {
   const { postSlug } = await params;
   const post = await getPost(postSlug);
+
+  if (!post) {
+    return notFound();
+  }
 
   return (
     <PageContainer>
