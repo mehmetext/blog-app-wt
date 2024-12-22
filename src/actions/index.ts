@@ -2,7 +2,6 @@
 
 import { Category, Comment, Post, User } from "@prisma/client";
 
-// Ortak API çağrısı için yardımcı fonksiyon
 async function fetchAPI<T>(endpoint: string): Promise<T> {
   try {
     const response = await fetch(`${process.env.API_URL}/api/${endpoint}`);
@@ -17,7 +16,6 @@ async function fetchAPI<T>(endpoint: string): Promise<T> {
   }
 }
 
-// Mevcut fonksiyonları güncelleme
 export async function getPosts() {
   return fetchAPI<
     (Post & {
