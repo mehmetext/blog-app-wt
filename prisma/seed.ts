@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { sub } from "date-fns";
+import slugify from "slugify";
 
 const prisma = new PrismaClient();
 
@@ -15,21 +16,21 @@ async function main() {
     prisma.user.create({
       data: {
         email: "admin@example.com",
-        name: "Admin User",
+        name: "Admin Kullanıcı",
         role: "ADMIN",
       },
     }),
     prisma.user.create({
       data: {
-        email: "john@example.com",
-        name: "John Doe",
+        email: "ahmet@example.com",
+        name: "Ahmet Yılmaz",
         role: "USER",
       },
     }),
     prisma.user.create({
       data: {
-        email: "jane@example.com",
-        name: "Jane Smith",
+        email: "ayse@example.com",
+        name: "Ayşe Demir",
         role: "USER",
       },
     }),
@@ -39,38 +40,38 @@ async function main() {
   const categories = await Promise.all([
     prisma.category.create({
       data: {
-        name: "Technology",
-        slug: "technology",
+        name: "Teknoloji",
+        slug: "teknoloji",
       },
     }),
     prisma.category.create({
       data: {
-        name: "Travel",
-        slug: "travel",
+        name: "Seyahat",
+        slug: "seyahat",
       },
     }),
     prisma.category.create({
       data: {
-        name: "Food & Cooking",
-        slug: "food-cooking",
+        name: "Yemek & Mutfak",
+        slug: "yemek-mutfak",
       },
     }),
     prisma.category.create({
       data: {
-        name: "Health & Wellness",
-        slug: "health-wellness",
+        name: "Sağlık & Yaşam",
+        slug: "saglik-yasam",
       },
     }),
     prisma.category.create({
       data: {
-        name: "Personal Development",
-        slug: "personal-development",
+        name: "Kişisel Gelişim",
+        slug: "kisisel-gelisim",
       },
     }),
     prisma.category.create({
       data: {
-        name: "Science",
-        slug: "science",
+        name: "Bilim",
+        slug: "bilim",
       },
     }),
   ]);
@@ -85,46 +86,46 @@ async function main() {
   const postTemplates = [
     {
       tech: [
-        "The Future of AI: What to Expect in 2024",
-        "Understanding WebAssembly: A Deep Dive",
-        "Building Scalable Applications with Next.js",
-        "Rust vs Go: A Performance Comparison",
-        "Introduction to Quantum Computing",
+        "2024'te Yapay Zeka'nın Geleceği",
+        "WebAssembly'yi Derinlemesine Anlamak",
+        "Next.js ile Ölçeklenebilir Uygulamalar",
+        "Rust ve Go: Performans Karşılaştırması",
+        "Kuantum Bilişime Giriş",
       ],
       travel: [
-        "Hidden Gems of Southeast Asia",
-        "A Week in the Swiss Alps",
-        "Budget Travel Guide: Europe Edition",
-        "Best Street Food Markets in Asia",
-        "Adventure Travel: Patagonia Explorer",
+        "Güneydoğu Asya'nın Gizli Cennetleri",
+        "İsviçre Alpleri'nde Bir Hafta",
+        "Avrupa Bütçe Seyahat Rehberi",
+        "Asya'nın En İyi Sokak Lezzetleri",
+        "Macera Seyahati: Patagonya Keşfi",
       ],
       food: [
-        "Traditional Italian Pasta Recipes",
-        "Vegan Baking Essentials",
-        "Asian Fusion Cooking Guide",
-        "Seasonal Cooking: Spring Edition",
-        "Mastering French Pastries",
+        "Geleneksel Türk Mutfağı Tarifleri",
+        "Vegan Yemek Pişirme Rehberi",
+        "Dünya Mutfakları Füzyon Rehberi",
+        "Mevsimsel Yemek: Bahar Tarifleri",
+        "Ev Yapımı Ekmek Tarifleri",
       ],
       health: [
-        "Mindfulness Meditation Guide",
-        "Plant-Based Diet Benefits",
-        "Home Workout Routines",
-        "Sleep Optimization Tips",
-        "Stress Management Techniques",
+        "Mindfulness Meditasyon Rehberi",
+        "Bitkisel Beslenmenin Faydaları",
+        "Evde Spor Rutinleri",
+        "Kaliteli Uyku İpuçları",
+        "Stres Yönetimi Teknikleri",
       ],
       development: [
-        "Building Better Habits",
-        "Time Management Strategies",
-        "Public Speaking Mastery",
-        "Financial Planning 101",
-        "Effective Goal Setting",
+        "Etkili Alışkanlık Oluşturma",
+        "Zaman Yönetimi Stratejileri",
+        "Etkili İletişim Becerileri",
+        "Finansal Planlama 101",
+        "Hedef Belirleme Teknikleri",
       ],
       science: [
-        "Latest Discoveries in Astronomy",
-        "Understanding Climate Change",
-        "Breakthroughs in Genetics",
-        "The Science of Sleep",
-        "Neuroscience Basics",
+        "Astronomi'de Son Keşifler",
+        "İklim Değişikliğini Anlamak",
+        "Genetik Alanındaki Gelişmeler",
+        "Uykunun Bilimi",
+        "Nörobilim Temelleri",
       ],
     },
   ];
@@ -132,29 +133,28 @@ async function main() {
   // Create 50 posts
   const posts = [];
   for (let i = 1; i <= 50; i++) {
-    const createdAt = randomPastDate(365); // Random date within the last year
+    const createdAt = randomPastDate(365);
     const category = categories[Math.floor(Math.random() * categories.length)];
     const author = users[Math.floor(Math.random() * users.length)];
 
-    // Select a random title based on category
     let titles;
     switch (category.slug) {
-      case "technology":
+      case "teknoloji":
         titles = postTemplates[0].tech;
         break;
-      case "travel":
+      case "seyahat":
         titles = postTemplates[0].travel;
         break;
-      case "food-cooking":
+      case "yemek-mutfak":
         titles = postTemplates[0].food;
         break;
-      case "health-wellness":
+      case "saglik-yasam":
         titles = postTemplates[0].health;
         break;
-      case "personal-development":
+      case "kisisel-gelisim":
         titles = postTemplates[0].development;
         break;
-      case "science":
+      case "bilim":
         titles = postTemplates[0].science;
         break;
       default:
@@ -162,7 +162,7 @@ async function main() {
     }
 
     const title = `${titles[Math.floor(Math.random() * titles.length)]} ${i}`;
-    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    const slug = slugify(title, { lower: true, strict: true });
 
     const post = await prisma.post.create({
       data: {
@@ -171,66 +171,66 @@ async function main() {
         content: `# ${title}
 
 ${
-  category.slug === "technology"
+  category.slug === "teknoloji"
     ? `
-As technology continues to evolve at an unprecedented pace, we're seeing remarkable innovations across various domains. This post explores the latest developments and their implications for the future.
+Teknoloji dünyası her geçen gün hızla gelişmeye devam ediyor. Bu yazıda, son gelişmeleri ve gelecekteki etkilerini inceliyoruz.
 
-## Key Points
+## Önemli Noktalar
 
-- Understanding the fundamentals
-- Practical applications
-- Future implications
-- Best practices and guidelines
+- Temel kavramlar
+- Pratik uygulamalar
+- Gelecekteki etkiler
+- En iyi uygulamalar
 
-### Technical Details
+### Teknik Detaylar
 
 \`\`\`javascript
-// Example code implementation
-const implement = async (data) => {
-  const result = await processData(data);
-  return optimize(result);
+// Örnek kod implementasyonu
+const uygula = async (veri) => {
+  const sonuc = await veriIsleme(veri);
+  return optimize(sonuc);
 };
 \`\`\`
 
-## Real-world Applications
+## Gerçek Dünya Uygulamaları
 
-1. Enterprise solutions
-2. Consumer applications
-3. Research and development
-4. Educational purposes
+1. Kurumsal çözümler
+2. Tüketici uygulamaları
+3. Araştırma ve geliştirme
+4. Eğitim amaçlı kullanım
 
 `
     : `
-## Introduction
+## Giriş
 
-This comprehensive guide will walk you through everything you need to know about ${title.toLowerCase()}. We'll cover the essentials, advanced techniques, and practical tips you can apply immediately.
+Bu kapsamlı rehber, ${title.toLowerCase()} hakkında bilmeniz gereken her şeyi size anlatacak. Temel kavramları, ileri düzey teknikleri ve hemen uygulayabileceğiniz pratik ipuçlarını ele alacağız.
 
-### Key Takeaways
+### Önemli Noktalar
 
-1. Fundamental concepts
-2. Practical applications
-3. Expert tips and tricks
-4. Common mistakes to avoid
+1. Temel kavramlar
+2. Pratik uygulamalar
+3. Uzman ipuçları
+4. Sık yapılan hatalar
 
-## Detailed Analysis
+## Detaylı İnceleme
 
-Let's dive deeper into each aspect and understand how you can make the most of this knowledge in your daily life.
+Bu bilgileri günlük hayatınızda nasıl en iyi şekilde kullanabileceğinizi inceleyelim.
 
-### Best Practices
+### En İyi Uygulamalar
 
-- Start with the basics
-- Practice regularly
-- Learn from experts
-- Stay updated with latest trends
+- Temelden başlayın
+- Düzenli pratik yapın
+- Uzmanlardan öğrenin
+- Güncel kalın
 
 `
 }
 
-## Conclusion
+## Sonuç
 
-This post has covered the essential aspects of ${title.toLowerCase()}. We hope you found this information valuable and applicable to your needs.
+Bu yazıda ${title.toLowerCase()} konusunun temel yönlerini ele aldık. Umarız bu bilgiler size faydalı olmuştur.
 
-For more information, check out our related posts or leave a comment below.`,
+Daha fazla bilgi için ilgili yazılarımıza göz atabilir veya aşağıda yorum bırakabilirsiniz.`,
         coverImage: `https://picsum.photos/seed/${i}/1200/630`,
         categoryId: category.id,
         authorId: author.id,
@@ -242,14 +242,14 @@ For more information, check out our related posts or leave a comment below.`,
     // Add 2-5 comments for each post
     const numComments = Math.floor(Math.random() * 4) + 2;
     const commentTemplates = [
-      "Great article! I especially liked the part about",
-      "This was really helpful. I've been looking for information about",
-      "Interesting perspective on",
-      "Thanks for sharing! I learned a lot about",
-      "Well-written and informative piece about",
-      "I've been following this topic for a while, and this adds great insight into",
-      "The examples really helped me understand",
-      "Looking forward to more content about",
+      "Harika bir yazı olmuş! Özellikle şu kısım çok iyiydi:",
+      "Bu çok faydalı oldu. Tam da şu konu hakkında bilgi arıyordum:",
+      "İlginç bir bakış açısı sunmuşsunuz:",
+      "Paylaşım için teşekkürler! Şu konuda çok şey öğrendim:",
+      "Çok iyi yazılmış ve bilgilendirici bir yazı:",
+      "Bu konuyu uzun zamandır takip ediyordum, güzel bir içgörü sunmuşsunuz:",
+      "Örnekler konuyu anlamama çok yardımcı oldu:",
+      "Daha fazla içerik bekliyoruz şu konuda:",
     ];
 
     for (let j = 1; j <= numComments; j++) {
@@ -259,14 +259,14 @@ For more information, check out our related posts or leave a comment below.`,
         data: {
           content: `${commentTemplate} ${title.toLowerCase()}. ${
             j === 1
-              ? "Looking forward to more content!"
+              ? "Yeni içeriklerinizi merakla bekliyorum!"
               : j === 2
-              ? "Would love to see a follow-up post."
-              : "Thanks for sharing!"
+              ? "Devamı için sabırsızlanıyorum."
+              : "Teşekkürler!"
           }`,
-          authorName: `Reader ${Math.floor(Math.random() * 100) + 1}`,
+          authorName: `Okuyucu ${Math.floor(Math.random() * 100) + 1}`,
           postId: post.id,
-          createdAt: sub(createdAt, { hours: Math.random() * 24 * 7 }), // Comments within a week of post
+          createdAt: sub(createdAt, { hours: Math.random() * 24 * 7 }),
         },
       });
     }
@@ -274,10 +274,10 @@ For more information, check out our related posts or leave a comment below.`,
     posts.push(post);
   }
 
-  console.log(`Database has been seeded. 🌱`);
-  console.log(`Created ${users.length} users`);
-  console.log(`Created ${categories.length} categories`);
-  console.log(`Created ${posts.length} posts`);
+  console.log(`Veritabanı başarıyla dolduruldu. 🌱`);
+  console.log(`${users.length} kullanıcı oluşturuldu`);
+  console.log(`${categories.length} kategori oluşturuldu`);
+  console.log(`${posts.length} yazı oluşturuldu`);
 }
 
 main()
