@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 import { sub } from "date-fns";
 import slugify from "slugify";
 
@@ -18,6 +19,7 @@ async function main() {
         email: "admin@example.com",
         name: "Admin Kullanıcı",
         role: "ADMIN",
+        hashedPassword: bcrypt.hashSync("admin", 10),
       },
     }),
     prisma.user.create({
@@ -25,6 +27,7 @@ async function main() {
         email: "ahmet@example.com",
         name: "Ahmet Yılmaz",
         role: "USER",
+        hashedPassword: bcrypt.hashSync("123456", 10),
       },
     }),
     prisma.user.create({
@@ -32,6 +35,7 @@ async function main() {
         email: "ayse@example.com",
         name: "Ayşe Demir",
         role: "USER",
+        hashedPassword: bcrypt.hashSync("123456", 10),
       },
     }),
   ]);
