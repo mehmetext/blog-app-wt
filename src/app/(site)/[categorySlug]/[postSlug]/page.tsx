@@ -46,7 +46,7 @@ export default async function PostPage({
 
   return (
     <PageContainer>
-      <article className="mx-auto max-w-3xl space-y-8">
+      <article className="mx-auto w-full max-w-3xl space-y-8">
         <BreadcrumbNav
           items={[
             {
@@ -63,7 +63,7 @@ export default async function PostPage({
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              <span>Yazar Adı</span>
+              <span>{post.author.name}</span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
@@ -76,7 +76,7 @@ export default async function PostPage({
             </div>
             <div className="flex items-center gap-2">
               <MessageCircle className="h-4 w-4" />
-              <span>5 yorum</span>
+              <span>{post.comments.length} yorum</span>
             </div>
           </div>
         </div>
@@ -122,7 +122,7 @@ export default async function PostPage({
           </div>
         </div>
 
-        <Comments />
+        <Comments post={post} />
       </article>
     </PageContainer>
   );

@@ -1,19 +1,23 @@
 "use server";
 
-import { Category, Post } from "@prisma/client";
+import { Category, Comment, Post, User } from "@prisma/client";
 
 export async function getPosts() {
   const posts = await fetch(`${process.env.API_URL}/api/posts`).then((res) =>
     res.json()
   );
-  return posts.data as (Post & { categories: Category[] })[];
+  return posts.data as (Post & { category: Category })[];
 }
 
 export async function getPost(slug: string) {
   const post = await fetch(`${process.env.API_URL}/api/posts/${slug}`).then(
     (res) => res.json()
   );
-  return post.data as Post;
+  return post.data as Post & {
+    category: Category;
+    author: User;
+    comments: Comment[];
+  };
 }
 
 export async function getCategory(slug: string) {

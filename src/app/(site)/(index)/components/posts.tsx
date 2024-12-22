@@ -18,7 +18,7 @@ export default function Posts({
 }: {
   page: number;
   q: string;
-  posts: (Post & { categories: Category[] })[];
+  posts: (Post & { category: Category })[];
 }) {
   const [query, setQuery] = useState(q);
   const router = useRouter();
