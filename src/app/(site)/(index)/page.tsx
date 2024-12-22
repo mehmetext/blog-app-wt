@@ -12,7 +12,7 @@ export default async function HomePage({
   searchParams: Promise<SearchParams>;
 }) {
   const { page, q } = await homepageNuqs.cache.parse(searchParams);
-  const featuredPost = await getPost("iklim-degisikligini-anlamak-10");
+  const featuredPost = await getPost("zaman-yonetimi-stratejileri-10");
   const posts = await getPosts({ page, q });
 
   return (
