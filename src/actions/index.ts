@@ -88,3 +88,17 @@ export const getCategories = async () => fetchAPI<Category[]>("categories");
 
 export const getCategory = async (slug: string) =>
   fetchAPI<Category>(`categories/${slug}`);
+
+export const createComment = async (comment: {
+  content: string;
+  authorName: string;
+  postId: string;
+}) =>
+  fetchAPI<Comment>("comments", {
+    method: "POST",
+    body: {
+      content: comment.content,
+      authorName: !comment.authorName ? null : comment.authorName,
+      postId: comment.postId,
+    },
+  });

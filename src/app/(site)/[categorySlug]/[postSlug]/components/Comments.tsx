@@ -1,3 +1,6 @@
+"use client";
+
+import { createComment } from "@/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -5,13 +8,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Category, Comment, Post, User } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
-import { Send } from "lucide-react";
+import { Loader, Send } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Comments({
   post,
 }: {
   post: Post & { category: Category; author: User; comments: Comment[] };
 }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [content, setContent] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const router = useRouter();
+
   return (
     <Card>
       <CardHeader>
@@ -19,12 +29,38 @@ export default function Comments({
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Yorum Formu */}
-        <form className="space-y-4">
-          <Input placeholder="İsminiz (opsiyonel)" />
+        <form
+          className="space-y-4"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            setIsLoading(true);
+            await createComment({
+              content,
+              authorName: name,
+              postId: post.id,
+            });
+            router.refresh();
+            setIsLoading(false);
+            setContent("");
+            setName("");
+          }}
+        >
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            name="name"
+            placeholder="İsminiz (opsiyonel)"
+          />
           <div className="flex gap-2">
-            <Textarea placeholder="Yorumunuz..." required />
-            <Button type="submit" size="icon">
-              <Send />
+            <Textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              name="content"
+              placeholder="Yorumunuz..."
+              required
+            />
+            <Button type="submit" size="icon" disabled={isLoading}>
+              {isLoading ? <Loader className="animate-spin" /> : <Send />}
             </Button>
           </div>
         </form>
