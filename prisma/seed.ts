@@ -42,7 +42,7 @@ async function main() {
   });
 
   // Create posts
-  await prisma.post.create({
+  const nextJsPost = await prisma.post.create({
     data: {
       title: "Getting Started with Next.js",
       content: `
@@ -73,7 +73,7 @@ npx create-next-app@latest my-app
     },
   });
 
-  await prisma.post.create({
+  const reactNativePost = await prisma.post.create({
     data: {
       title: "React Native Fundamentals",
       content: `
@@ -103,19 +103,32 @@ Follow these steps to set up your development environment...
   await prisma.comment.createMany({
     data: [
       {
-        content: "Great introduction to Next.js!",
-        postId: "1",
+        content:
+          "Great introduction to Next.js! The server-side rendering explanation was particularly helpful.",
+        postId: nextJsPost.id,
         authorName: "John Doe",
       },
       {
-        content: "This helped me get started with React Native.",
-        postId: "2",
+        content:
+          "This helped me understand React Native's core concepts. The environment setup guide was clear.",
+        postId: reactNativePost.id,
         authorName: "Jane Smith",
       },
       {
-        content: "Looking forward to more tutorials!",
-        postId: "1",
+        content:
+          "The code examples were very practical. Would love to see more advanced Next.js topics!",
+        postId: nextJsPost.id,
         authorName: "Developer123",
+      },
+      {
+        content: "Great explanation of cross-platform development benefits!",
+        postId: reactNativePost.id,
+        authorName: "Mobile Dev",
+      },
+      {
+        content: "The file-based routing section was eye-opening. Thanks!",
+        postId: nextJsPost.id,
+        authorName: "WebDev Enthusiast",
       },
     ],
   });

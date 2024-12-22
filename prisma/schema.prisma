@@ -51,9 +51,10 @@ model Post {
   coverImage String
 
   authorId   String
-  author     User     @relation(fields: [authorId], references: [id])
-  category   Category @relation(fields: [categoryId], references: [id])
+  author     User      @relation(fields: [authorId], references: [id])
+  category   Category  @relation(fields: [categoryId], references: [id])
   categoryId String
+  comments   Comment[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -65,6 +66,8 @@ model Comment {
   content    String
   postId     String
   authorName String?
+
+  post Post @relation(fields: [postId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
