@@ -3,10 +3,10 @@
 import { PaginationControls } from "@/components/pagination-controls";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { H1 } from "@/components/ui/typography";
+import { H1, Muted } from "@/components/ui/typography";
 import homepageNuqs from "@/lib/nuqs/homepage";
 import { Category, Comment, Post, User } from "@prisma/client";
-import { Search } from "lucide-react";
+import { FileX, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { PostItem } from "./post-item";
@@ -57,21 +57,32 @@ export default function Posts({
           </Button>
         </form>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {posts.map((post) => (
-          <PostItem key={post.id} post={post} />
-        ))}
-      </div>
-      <PaginationControls
-        currentPage={page}
-        totalPages={pageCount}
-        generatePageUrl={(page) => {
-          return `/${category?.slug ?? ""}${homepageNuqs.serializer({
-            page: page === 1 ? null : page,
-            q: query,
-          })}`;
-        }}
-      />
+      {posts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {posts.map((post) => (
+            <PostItem key={post.id} post={post} />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center gap-2">
+          <FileX className="h-12 w-12 text-muted-foreground" />
+          <Muted>
+            {category ? "Bu kategoride yazı bulunamadı." : "Yazı bulunamadı."}
+          </Muted>
+        </div>
+      )}
+      {pageCount > 1 && (
+        <PaginationControls
+          currentPage={page}
+          totalPages={pageCount}
+          generatePageUrl={(page) => {
+            return `/${category?.slug ?? ""}${homepageNuqs.serializer({
+              page: page === 1 ? null : page,
+              q: query,
+            })}`;
+          }}
+        />
+      )}
     </div>
   );
 }
