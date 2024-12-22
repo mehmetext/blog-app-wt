@@ -19,8 +19,6 @@ export async function GET(
     },
   });
 
-  console.log(post);
-
   return NextResponse.json({
     data: post,
   });

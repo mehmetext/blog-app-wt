@@ -15,6 +15,7 @@ export default function Posts({
   page,
   q,
   posts,
+  pageCount,
 }: {
   page: number;
   q: string;
@@ -23,11 +24,10 @@ export default function Posts({
     author: User;
     comments: Comment[];
   })[];
+  pageCount: number;
 }) {
   const [query, setQuery] = useState(q);
   const router = useRouter();
-
-  const TOTAL_PAGES = 10; // Bu değer API'den gelmeli
 
   return (
     <div className="space-y-6">
@@ -62,7 +62,7 @@ export default function Posts({
       </div>
       <PaginationControls
         currentPage={page}
-        totalPages={TOTAL_PAGES}
+        totalPages={pageCount}
         generatePageUrl={(page) => {
           return `/${homepageNuqs.serializer({
             page: page === 1 ? null : page,

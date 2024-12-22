@@ -10,6 +10,12 @@ type RequestConfig = {
   next?: NextFetchRequestConfig;
 };
 
+type PaginatedResponse<T> = {
+  items: T[];
+  limit: number;
+  pageCount: number;
+};
+
 async function fetchAPI<T>(
   endpoint: string,
   config: RequestConfig = {}
@@ -50,14 +56,16 @@ async function fetchAPI<T>(
   }
 }
 
-export const getPosts = async () =>
+export const getPosts = async (params: { page: number; q: string }) =>
   fetchAPI<
-    (Post & {
-      category: Category;
-      author: User;
-      comments: Comment[];
-    })[]
-  >("posts");
+    PaginatedResponse<
+      Post & {
+        category: Category;
+        author: User;
+        comments: Comment[];
+      }
+    >
+  >(`posts?page=${params.page}&q=${params.q}`);
 
 export const getPost = async (slug: string) =>
   fetchAPI<
