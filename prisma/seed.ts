@@ -1,144 +1,103 @@
 import { PrismaClient } from "@prisma/client";
+import { sub } from "date-fns";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // Clean the database
-  await prisma.comment.deleteMany();
-  await prisma.post.deleteMany();
-  await prisma.category.deleteMany();
-  await prisma.user.deleteMany();
-
-  // Create users
-  const adminUser = await prisma.user.create({
+  // Create admin user
+  const admin = await prisma.user.create({
     data: {
-      name: "Admin User",
       email: "admin@example.com",
+      name: "Admin User",
       role: "ADMIN",
     },
   });
 
-  const regularUser = await prisma.user.create({
-    data: {
-      name: "Regular User",
-      email: "user@example.com",
-      role: "USER",
-    },
-  });
-
   // Create categories
-  const webDevCategory = await prisma.category.create({
-    data: {
-      name: "Web Development",
-      slug: "web-development",
-    },
-  });
+  const categories = await Promise.all([
+    prisma.category.create({
+      data: {
+        name: "Technology",
+        slug: "technology",
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: "Travel",
+        slug: "travel",
+      },
+    }),
+    prisma.category.create({
+      data: {
+        name: "Lifestyle",
+        slug: "lifestyle",
+      },
+    }),
+  ]);
 
-  const mobileDevCategory = await prisma.category.create({
-    data: {
-      name: "Mobile Development",
-      slug: "mobile-development",
-    },
-  });
+  // Helper function to generate random past dates
+  const randomPastDate = (maxDaysAgo: number) => {
+    const daysAgo = Math.floor(Math.random() * maxDaysAgo);
+    return sub(new Date(), { days: daysAgo });
+  };
 
-  // Create posts
-  const nextJsPost = await prisma.post.create({
-    data: {
-      title: "Getting Started with Next.js",
-      content: `
-# Getting Started with Next.js
+  // Create 30 posts
+  const posts = [];
+  for (let i = 1; i <= 30; i++) {
+    const createdAt = randomPastDate(365); // Random date within the last year
+    const category = categories[Math.floor(Math.random() * categories.length)];
 
-Next.js is a powerful React framework that makes building full-stack web applications simple and efficient.
+    const post = await prisma.post.create({
+      data: {
+        title: `Sample Post ${i}`,
+        slug: `sample-post-${i}`,
+        content: `This is the content for sample post ${i}. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
-## Key Features
+## Heading 2
 
-- Server-Side Rendering
-- Static Site Generation
-- API Routes
-- File-based Routing
+- List item 1
+- List item 2
+- List item 3
 
-## Getting Started
+### Code Example
 
-First, create a new Next.js project:
-
-\`\`\`bash
-npx create-next-app@latest my-app
+\`\`\`javascript
+console.log("Hello World!");
 \`\`\`
-      `,
-      slug: "getting-started-with-nextjs",
-      coverImage:
-        "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
-      authorId: adminUser.id,
-      categoryId: webDevCategory.id,
-    },
-  });
 
-  const reactNativePost = await prisma.post.create({
-    data: {
-      title: "React Native Fundamentals",
-      content: `
-# React Native Fundamentals
-
-Learn how to build mobile applications using React Native.
-
-## Why React Native?
-
-- Cross-platform development
-- Native performance
-- Large community
-- Code reusability
-
-## Setting Up Your Environment
-
-Follow these steps to set up your development environment...
-      `,
-      slug: "react-native-fundamentals",
-      coverImage: "https://images.unsplash.com/photo-1556656793-08538906a9f8",
-      authorId: regularUser.id,
-      categoryId: mobileDevCategory.id,
-    },
-  });
-
-  // Create comments
-  await prisma.comment.createMany({
-    data: [
-      {
-        content:
-          "Great introduction to Next.js! The server-side rendering explanation was particularly helpful.",
-        postId: nextJsPost.id,
-        authorName: "John Doe",
+More detailed content goes here...`,
+        coverImage: `https://picsum.photos/seed/${i}/1200/630`, // Random image for each post
+        categoryId: category.id,
+        authorId: admin.id,
+        createdAt,
+        updatedAt: createdAt,
       },
-      {
-        content:
-          "This helped me understand React Native's core concepts. The environment setup guide was clear.",
-        postId: reactNativePost.id,
-        authorName: "Jane Smith",
-      },
-      {
-        content:
-          "The code examples were very practical. Would love to see more advanced Next.js topics!",
-        postId: nextJsPost.id,
-        authorName: "Developer123",
-      },
-      {
-        content: "Great explanation of cross-platform development benefits!",
-        postId: reactNativePost.id,
-        authorName: "Mobile Dev",
-      },
-      {
-        content: "The file-based routing section was eye-opening. Thanks!",
-        postId: nextJsPost.id,
-        authorName: "WebDev Enthusiast",
-      },
-    ],
-  });
+    });
 
-  console.log("Seed data created successfully!");
+    // Add 1-3 comments for each post
+    const numComments = Math.floor(Math.random() * 3) + 1;
+    for (let j = 1; j <= numComments; j++) {
+      await prisma.comment.create({
+        data: {
+          content: `This is comment ${j} on post ${i}. Great article!`,
+          authorName: `Commenter ${j}`,
+          postId: post.id,
+          createdAt: sub(createdAt, { hours: Math.random() * 24 }), // Comments are slightly newer than posts
+        },
+      });
+    }
+
+    posts.push(post);
+  }
+
+  console.log(`Database has been seeded. 🌱`);
+  console.log(`Created ${categories.length} categories`);
+  console.log(`Created ${posts.length} posts`);
 }
 
 main()
   .catch((e) => {
-    console.error("Error seeding database:", e);
+    console.error(e);
     process.exit(1);
   })
   .finally(async () => {
