@@ -32,8 +32,13 @@ export async function getCategories() {
 }
 
 export async function getCategory(slug: string) {
-  const category = await fetch(
-    `${process.env.API_URL}/api/categories/${slug}`
-  ).then((res) => res.json());
-  return category.data as Category;
+  try {
+    const category = await fetch(
+      `${process.env.API_URL}/api/categories/${slug}`
+    ).then((res) => res.json());
+    return category.data as Category;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
