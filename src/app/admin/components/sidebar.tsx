@@ -1,3 +1,5 @@
+"use client";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,6 +30,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface SidebarMenuGroup {
   label: string;
@@ -36,6 +39,8 @@ interface SidebarMenuGroup {
 }
 
 export default function Sidebar() {
+  const pathname = usePathname();
+
   const menuGroups: SidebarMenuGroup[] = [
     {
       label: "Gönderiler",
@@ -97,7 +102,10 @@ export default function Sidebar() {
               <SidebarMenu>
                 {group.items.map((item, i) => (
                   <SidebarMenuItem key={i}>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === item.href}
+                    >
                       <Link href={item.href}>
                         <item.icon />
                         <span>{item.label}</span>
