@@ -4,6 +4,12 @@ import { sub } from "date-fns";
 const prisma = new PrismaClient();
 
 async function main() {
+  // Clean the database
+  await prisma.comment.deleteMany();
+  await prisma.post.deleteMany();
+  await prisma.category.deleteMany();
+  await prisma.user.deleteMany();
+
   // Create admin user
   const admin = await prisma.user.create({
     data: {
