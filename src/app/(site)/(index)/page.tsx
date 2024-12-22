@@ -12,7 +12,7 @@ export default async function HomePage({
   searchParams: Promise<SearchParams>;
 }) {
   const { page, q } = await homepageNuqs.cache.parse(searchParams);
-  const featuredPost = await getPost("sample-post-10");
+  const featuredPost = await getPost("asian-fusion-cooking-guide-10");
   const posts = await getPosts({ page, q });
 
   console.log(posts);
