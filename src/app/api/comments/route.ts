@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { wait } from "@/lib/utils";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -15,8 +14,6 @@ export async function POST(req: NextRequest) {
       postId,
     },
   });
-
-  await wait(500);
 
   return NextResponse.json({ data: newComment }, { status: 201 });
 }
