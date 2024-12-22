@@ -59,10 +59,7 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
           </div>
           <Link
             href={`/${post.category.slug}/${post.slug}`}
-            className={cn(
-              buttonVariants({ variant: "secondary", size: "sm" }),
-              "hover:bg-white hover:text-foreground transition-colors"
-            )}
+            className={cn(buttonVariants({ variant: "secondary", size: "sm" }))}
           >
             <span>Devamını Oku</span>
             <ArrowRight className="h-4 w-4" />
