@@ -56,7 +56,11 @@ async function fetchAPI<T>(
   }
 }
 
-export const getPosts = async (params: { page: number; q: string }) =>
+export const getPosts = async (params: {
+  page: number;
+  q: string;
+  category?: string;
+}) =>
   fetchAPI<
     PaginatedResponse<
       Post & {
@@ -65,7 +69,11 @@ export const getPosts = async (params: { page: number; q: string }) =>
         comments: Comment[];
       }
     >
-  >(`posts?page=${params.page}&q=${params.q}`);
+  >(
+    `posts?page=${params.page}&q=${params.q}&${
+      params.category ? `category=${params.category}` : ""
+    }`
+  );
 
 export const getPost = async (slug: string) =>
   fetchAPI<

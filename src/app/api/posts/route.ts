@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
   const page =
     Number(searchParams.get("page")) < 1 ? 1 : Number(searchParams.get("page"));
   const q = searchParams.get("q");
+  const category = searchParams.get("category");
   const limit = 6;
 
   const [posts, total] = await prisma.$transaction([
@@ -24,6 +25,14 @@ export async function GET(request: NextRequest) {
       where: {
         // Only show posts that are not deleted
         deletedAt: null,
+        // Only show posts that are in the category
+        ...(category
+          ? {
+              category: {
+                slug: category,
+              },
+            }
+          : {}),
         // Search for posts that contain the query in the title or content
         ...(q
           ? {
@@ -53,6 +62,13 @@ export async function GET(request: NextRequest) {
     prisma.post.count({
       where: {
         deletedAt: null,
+        ...(category
+          ? {
+              category: {
+                slug: category,
+              },
+            }
+          : {}),
         ...(q
           ? {
               OR: [

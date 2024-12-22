@@ -12,11 +12,13 @@ import { useState } from "react";
 import { PostItem } from "./post-item";
 
 export default function Posts({
+  category,
   page,
   q,
   posts,
   pageCount,
 }: {
+  category?: Category;
   page: number;
   q: string;
   posts: (Post & {
@@ -37,7 +39,7 @@ export default function Posts({
           onSubmit={(e) => {
             e.preventDefault();
             router.push(
-              `/${homepageNuqs.serializer({
+              `/${category?.slug ?? ""}${homepageNuqs.serializer({
                 page: null,
                 q: query.trim() === "" ? null : query.trim(),
               })}`
@@ -64,7 +66,7 @@ export default function Posts({
         currentPage={page}
         totalPages={pageCount}
         generatePageUrl={(page) => {
-          return `/${homepageNuqs.serializer({
+          return `/${category?.slug ?? ""}${homepageNuqs.serializer({
             page: page === 1 ? null : page,
             q: query,
           })}`;
