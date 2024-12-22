@@ -1,7 +1,7 @@
 import { badgeVariants } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Category, Post } from "@prisma/client";
+import { Category, Comment, Post, User } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
 import { ArrowRight, Calendar, MessageCircle } from "lucide-react";
@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface FeaturedPostProps {
-  post: Post & { category: Category };
+  post: Post & { category: Category; author: User; comments: Comment[] };
 }
 
 export function FeaturedPost({ post }: FeaturedPostProps) {
@@ -54,7 +54,7 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
             </div>
             <div className="flex items-center gap-1">
               <MessageCircle className="h-4 w-4" />
-              <span>5 yorum</span>
+              <span>{post.comments.length} yorum</span>
             </div>
           </div>
           <Link
