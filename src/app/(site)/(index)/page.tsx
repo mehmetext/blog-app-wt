@@ -15,8 +15,6 @@ export default async function HomePage({
   const featuredPost = await getPost("asian-fusion-cooking-guide-10");
   const posts = await getPosts({ page, q });
 
-  console.log(posts);
-
   return (
     <PageContainer>
       <BreadcrumbNav />
