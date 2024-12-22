@@ -2,28 +2,18 @@ import { getPost } from "@/actions";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import PageContainer from "@/components/page-container";
 import { badgeVariants } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { H1 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
-import {
-  Calendar,
-  Copy,
-  Facebook,
-  Instagram,
-  Linkedin,
-  Mail,
-  MessageCircle,
-  Twitter,
-  User,
-} from "lucide-react";
+import { Calendar, MessageCircle, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Markdown from "react-markdown";
 import Comments from "./components/comments";
+import ShareButtons from "./components/share-buttons";
 
 export async function generateMetadata({
   params,
@@ -111,26 +101,7 @@ export default async function PostPage({
           </Card>
 
           <div className="lg:absolute right-[calc(100%+1rem)] top-0 bottom-0">
-            <div className="sticky top-1/4 flex flex-row lg:flex-col gap-4">
-              <Button size="icon" variant="ghost">
-                <Twitter />
-              </Button>
-              <Button size="icon" variant="ghost">
-                <Facebook />
-              </Button>
-              <Button size="icon" variant="ghost">
-                <Linkedin />
-              </Button>
-              <Button size="icon" variant="ghost">
-                <Instagram />
-              </Button>
-              <Button size="icon" variant="ghost">
-                <Mail />
-              </Button>
-              <Button size="icon" variant="ghost">
-                <Copy />
-              </Button>
-            </div>
+            <ShareButtons content={post.title} />
           </div>
         </div>
 
