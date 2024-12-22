@@ -1,10 +1,11 @@
 import { getPost } from "@/actions";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import PageContainer from "@/components/page-container";
-import { Badge } from "@/components/ui/badge";
+import { badgeVariants } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { H1 } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
 import {
@@ -19,6 +20,7 @@ import {
   User,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import Markdown from "react-markdown";
 import Comments from "./components/comments";
 
@@ -58,7 +60,12 @@ export default async function PostPage({
         />
 
         <div className="space-y-4">
-          <Badge variant="outline">{post.category.name}</Badge>
+          <Link
+            href={`/${post.category.slug}`}
+            className={cn(badgeVariants({ variant: "outline" }))}
+          >
+            {post.category.name}
+          </Link>
           <H1>{post.title}</H1>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
