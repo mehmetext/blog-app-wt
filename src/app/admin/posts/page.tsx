@@ -12,8 +12,8 @@ export default async function AdminPostsPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const { page, q } = await homepageNuqs.cache.parse(searchParams);
-  const posts = await getPosts({ page, q });
+  const { page, q, category } = await homepageNuqs.cache.parse(searchParams);
+  const posts = await getPosts({ page, q, category });
 
   return (
     <AdminContainer

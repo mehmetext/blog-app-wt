@@ -59,7 +59,7 @@ async function fetchAPI<T>(
 export const getPosts = async (params: {
   page: number;
   q: string;
-  category?: string;
+  category?: string | null;
 }) =>
   fetchAPI<
     PaginatedResponse<
