@@ -31,7 +31,7 @@ export default async function AdminPostsPage({
           </Link>
         </Button>
       </div>
-      <pre className="overflow-auto">{JSON.stringify(posts, null, 2)}</pre>
+      <pre>{JSON.stringify(posts, null, 2)}</pre>
     </AdminContainer>
   );
 }

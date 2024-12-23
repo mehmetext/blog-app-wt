@@ -8,7 +8,7 @@ export default function AdminContainer({
   breadcrumb: BreadcrumbItem[];
 }) {
   return (
-    <main className="flex-1 flex flex-col overflow-hidden">
+    <main className="flex-1 flex flex-col relative">
       <AdminHeader breadcrumb={breadcrumb} />
       <div className="flex-1 flex flex-col gap-4 px-4">{children}</div>
     </main>
