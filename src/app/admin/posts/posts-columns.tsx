@@ -29,6 +29,7 @@ export default [
   },
   {
     id: "category",
+    accessorFn: (row) => row.category.name,
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Kategori" />
     ),
@@ -73,7 +74,7 @@ export default [
     },
   },
   {
-    accessorKey: "status",
+    accessorKey: "deletedAt",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Durum" />
     ),
