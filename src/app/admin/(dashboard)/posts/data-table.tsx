@@ -1,6 +1,5 @@
 "use client";
 
-import { PaginatedResponse } from "@/actions";
 import { DataTable } from "@/components/ui/data-table";
 import { Category, Comment, Post, User } from "@prisma/client";
 import { SortingState } from "@tanstack/react-table";

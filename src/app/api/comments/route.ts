@@ -5,8 +5,6 @@ export async function POST(req: NextRequest) {
   const comment = await req.json();
   const { content, authorName, postId } = comment;
 
-  console.log(content, authorName, postId);
-
   const newComment = await prisma.comment.create({
     data: {
       content,
