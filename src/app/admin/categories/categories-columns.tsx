@@ -2,48 +2,15 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Category, Comment, Post, User } from "@prisma/client";
+import { Category } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Edit } from "lucide-react";
-import Link from "next/link";
 
 export default [
   {
-    accessorKey: "title",
-    header: "Title",
-    cell: ({ row }) => {
-      return (
-        <Link
-          target="_blank"
-          href={`/${row.original.category.slug}/${row.original.slug}`}
-          className="hover:underline"
-        >
-          {row.original.title}
-        </Link>
-      );
-    },
-  },
-  {
-    id: "category",
-    header: "Kategori",
-    cell: ({ row }) => {
-      return row.original.category.name;
-    },
-  },
-  {
-    accessorKey: "author",
-    header: "Yazar",
-    cell: ({ row }) => {
-      return row.original.author.name;
-    },
-  },
-  {
-    accessorKey: "comments",
-    header: "Yorumlar",
-    cell: ({ row }) => {
-      return row.original.comments.length;
-    },
+    accessorKey: "name",
+    header: "Adı",
   },
   {
     accessorKey: "createdAt",
@@ -86,6 +53,4 @@ export default [
       );
     },
   },
-] as ColumnDef<
-  Post & { category: Category; author: User; comments: Comment[] }
->[];
+] as ColumnDef<Category>[];
