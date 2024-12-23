@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     Number(searchParams.get("page")) < 1 ? 1 : Number(searchParams.get("page"));
   const q = searchParams.get("q");
   const category = searchParams.get("category");
-  const limit = 100; // TODO: make this dynamic
+  const limit = 6;
 
   const [posts, total] = await prisma.$transaction([
     prisma.post.findMany({

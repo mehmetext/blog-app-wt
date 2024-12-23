@@ -1,13 +1,12 @@
 import { getPosts } from "@/actions";
 import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/data-table";
 import { H3 } from "@/components/ui/typography";
 import homepageNuqs from "@/lib/nuqs/homepage";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { SearchParams } from "nuqs";
 import AdminContainer from "../components/admin-container";
-import postsColumns from "./posts-columns";
+import PostsDataTable from "./data-table";
 
 export default async function AdminPostsPage({
   searchParams,
@@ -33,7 +32,7 @@ export default async function AdminPostsPage({
           </Link>
         </Button>
       </div>
-      <DataTable columns={postsColumns} data={posts.items} />
+      <PostsDataTable posts={posts} page={page} />
     </AdminContainer>
   );
 }

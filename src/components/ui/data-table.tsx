@@ -23,15 +23,44 @@ import { DataTablePagination } from "./data-table-pagination";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  manualPagination?: boolean;
+  pageCount?: number;
+  pageIndex?: number;
+  pageSize?: number;
+  onPaginationChange?: (pageIndex: number, pageSize: number) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  manualPagination = false,
+  pageCount,
+  pageIndex = 0,
+  pageSize = 10,
+  onPaginationChange,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
+    manualPagination,
+    pageCount,
+    state: {
+      pagination: {
+        pageIndex,
+        pageSize,
+      },
+    },
+    onPaginationChange: (updater) => {
+      if (typeof updater === "function") {
+        const newState = updater({
+          pageIndex,
+          pageSize,
+        });
+        onPaginationChange?.(newState.pageIndex, newState.pageSize);
+      } else {
+        onPaginationChange?.(updater.pageIndex, updater.pageSize);
+      }
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
