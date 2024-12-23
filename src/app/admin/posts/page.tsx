@@ -1,11 +1,13 @@
 import { getPosts } from "@/actions";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
 import { H3 } from "@/components/ui/typography";
 import homepageNuqs from "@/lib/nuqs/homepage";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { SearchParams } from "nuqs";
 import AdminContainer from "../components/admin-container";
+import postsColumns from "./posts-columns";
 
 export default async function AdminPostsPage({
   searchParams,
@@ -31,7 +33,7 @@ export default async function AdminPostsPage({
           </Link>
         </Button>
       </div>
-      <pre className="overflow-auto">{JSON.stringify(posts, null, 2)}</pre>
+      <DataTable columns={postsColumns} data={posts.items} />
     </AdminContainer>
   );
 }
