@@ -14,15 +14,15 @@ export default async function AdminCategoriesPage() {
     <AdminContainer
       breadcrumb={[
         { label: "Admin Paneli", href: "/admin" },
-        { label: "Gönderiler", href: "/admin/posts" },
+        { label: "Kategoriler", href: "/admin/categories" },
       ]}
     >
       <div className="flex justify-between items-center">
-        <H3>Gönderiler</H3>
+        <H3>Kategoriler</H3>
         <Button asChild>
-          <Link href="/admin/posts/new">
+          <Link href="/admin/categories/new">
             <Plus className="w-4 h-4 mr-2" />
-            Yeni Gönderi
+            Yeni Kategori
           </Link>
         </Button>
       </div>
