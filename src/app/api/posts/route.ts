@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { Post, Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -12,6 +13,29 @@ export async function GET(request: NextRequest) {
   const sortBy = searchParams.get("sortBy");
   const sortDesc = searchParams.get("sortDesc");
 
+  const orderBy: Prisma.PostOrderByWithRelationInput = {};
+
+  if (sortBy) {
+    switch (sortBy) {
+      case "comments":
+        orderBy.comments = {
+          _count: sortDesc ? "desc" : "asc",
+        };
+        break;
+      case "author":
+        orderBy.author = {
+          name: sortDesc ? "desc" : "asc",
+        };
+        break;
+      case "deletedAt":
+        orderBy.deletedAt = sortDesc ? "desc" : "asc";
+        break;
+      default:
+        orderBy[sortBy as keyof Post] = sortDesc ? "desc" : "asc";
+        break;
+    }
+  }
+
   const [posts, total] = await prisma.$transaction([
     prisma.post.findMany({
       include: {
@@ -19,9 +43,7 @@ export async function GET(request: NextRequest) {
         author: true,
         comments: true,
       },
-      orderBy: {
-        [sortBy || "createdAt"]: sortDesc ? "desc" : "asc",
-      },
+      orderBy,
       take: limit,
       skip: (page - 1) * limit,
       where: {
