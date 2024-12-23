@@ -1,9 +1,10 @@
 import { getPosts } from "@/actions";
 import { Button } from "@/components/ui/button";
 import { H3 } from "@/components/ui/typography";
-import homepageNuqs from "@/lib/nuqs/homepage";
+import postsNuqs from "@/lib/nuqs/posts";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { SearchParams } from "nuqs";
 import AdminContainer from "../components/admin-container";
 import PostsDataTable from "./data-table";
@@ -13,9 +14,10 @@ export default async function AdminPostsPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const { page, q, category, limit } = await homepageNuqs.cache.parse(
+  const { page, q, category, limit } = await postsNuqs.cache.parse(
     searchParams
   );
+
   const posts = await getPosts({ page, q, category, limit });
 
   return (
@@ -34,7 +36,22 @@ export default async function AdminPostsPage({
           </Link>
         </Button>
       </div>
-      <PostsDataTable posts={posts} page={page} limit={limit} />
+      <PostsDataTable
+        posts={posts}
+        page={page}
+        limit={limit}
+        onPaginationChange={async (pageIndex, pageSize) => {
+          "use server";
+          redirect(
+            `/admin/posts${postsNuqs.serializer({
+              page: pageIndex + 1,
+              limit: pageSize as 10 | 20 | 30 | 40 | 50,
+              q,
+              category,
+            })}`
+          );
+        }}
+      />
     </AdminContainer>
   );
 }

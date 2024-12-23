@@ -9,6 +9,7 @@ export default function PostsDataTable({
   posts,
   page,
   limit,
+  onPaginationChange,
 }: {
   posts: PaginatedResponse<
     Post & {
@@ -19,6 +20,7 @@ export default function PostsDataTable({
   >;
   page: number;
   limit: number;
+  onPaginationChange: (pageIndex: number, pageSize: number) => void;
 }) {
   return (
     <DataTable
@@ -28,7 +30,7 @@ export default function PostsDataTable({
       pageCount={posts.pageCount}
       pageIndex={page - 1}
       pageSize={limit}
-      onPaginationChange={(pageIndex, pageSize) => {}}
+      onPaginationChange={onPaginationChange}
     />
   );
 }

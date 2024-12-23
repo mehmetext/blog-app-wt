@@ -17,6 +17,6 @@ const cache = createSearchParamsCache(searchParams);
 
 const serializer = createSerializer(searchParams);
 
-const homepageNuqs = { cache, serializer };
+const postsNuqs = { cache, serializer };
 
-export default homepageNuqs;
+export default postsNuqs;

@@ -2,7 +2,7 @@ import { getCategory, getPosts } from "@/actions";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import PageContainer from "@/components/page-container";
 import Posts from "@/components/posts";
-import homepageNuqs from "@/lib/nuqs/homepage";
+import postsNuqs from "@/lib/nuqs/posts";
 import { notFound } from "next/navigation";
 import { SearchParams } from "nuqs";
 
@@ -31,7 +31,7 @@ export default async function CategoryPage({
   searchParams: Promise<SearchParams>;
 }) {
   const { categorySlug } = await params;
-  const { page, q } = await homepageNuqs.cache.parse(searchParams);
+  const { page, q } = await postsNuqs.cache.parse(searchParams);
   const category = await getCategory(categorySlug);
   const posts = await getPosts({ page, q, category: categorySlug });
 

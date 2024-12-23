@@ -4,7 +4,7 @@ import { PaginationControls } from "@/components/pagination-controls";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { H1, Muted } from "@/components/ui/typography";
-import homepageNuqs from "@/lib/nuqs/homepage";
+import postsNuqs from "@/lib/nuqs/posts";
 import { Category, Comment, Post, User } from "@prisma/client";
 import { FileX, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -39,7 +39,7 @@ export default function Posts({
           onSubmit={(e) => {
             e.preventDefault();
             router.push(
-              `/${category?.slug ?? ""}${homepageNuqs.serializer({
+              `/${category?.slug ?? ""}${postsNuqs.serializer({
                 page: null,
                 q: query.trim() === "" ? null : query.trim(),
               })}`
@@ -76,7 +76,7 @@ export default function Posts({
           currentPage={page}
           totalPages={pageCount}
           generatePageUrl={(page) => {
-            return `/${category?.slug ?? ""}${homepageNuqs.serializer({
+            return `/${category?.slug ?? ""}${postsNuqs.serializer({
               page: page === 1 ? null : page,
               q: query,
             })}`;
