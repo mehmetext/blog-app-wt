@@ -8,7 +8,7 @@ export default function AdminHeader({
   breadcrumb: BreadcrumbItem[];
 }) {
   return (
-    <header className="flex items-center h-16 px-4 sticky top-0 bg-background">
+    <header className="flex items-center h-16 px-4 bg-background fixed top-0 w-full">
       <SidebarTrigger />
       <Separator orientation="vertical" className="h-4 ml-2 mr-4" />
       <BreadcrumbNav items={breadcrumb} />
