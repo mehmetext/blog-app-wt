@@ -13,8 +13,10 @@ export default async function AdminPostsPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const { page, q, category } = await homepageNuqs.cache.parse(searchParams);
-  const posts = await getPosts({ page, q, category });
+  const { page, q, category, limit } = await homepageNuqs.cache.parse(
+    searchParams
+  );
+  const posts = await getPosts({ page, q, category, limit });
 
   return (
     <AdminContainer
@@ -32,7 +34,7 @@ export default async function AdminPostsPage({
           </Link>
         </Button>
       </div>
-      <PostsDataTable posts={posts} page={page} />
+      <PostsDataTable posts={posts} page={page} limit={limit} />
     </AdminContainer>
   );
 }

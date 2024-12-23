@@ -8,6 +8,7 @@ import postsColumns from "./posts-columns";
 export default function PostsDataTable({
   posts,
   page,
+  limit,
 }: {
   posts: PaginatedResponse<
     Post & {
@@ -17,6 +18,7 @@ export default function PostsDataTable({
     }
   >;
   page: number;
+  limit: number;
 }) {
   return (
     <DataTable
@@ -25,7 +27,7 @@ export default function PostsDataTable({
       manualPagination
       pageCount={posts.pageCount}
       pageIndex={page - 1}
-      pageSize={10}
+      pageSize={limit}
       onPaginationChange={(pageIndex, pageSize) => {}}
     />
   );
