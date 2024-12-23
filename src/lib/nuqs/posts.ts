@@ -1,6 +1,7 @@
 import {
   createSearchParamsCache,
   createSerializer,
+  parseAsBoolean,
   parseAsInteger,
   parseAsNumberLiteral,
   parseAsString,
@@ -11,6 +12,8 @@ const searchParams = {
   q: parseAsString.withDefault(""),
   category: parseAsString,
   limit: parseAsNumberLiteral([10, 20, 30, 40, 50]).withDefault(10),
+  sortBy: parseAsString.withDefault("createdAt"),
+  sortDesc: parseAsBoolean.withDefault(false),
 };
 
 const cache = createSearchParamsCache(searchParams);

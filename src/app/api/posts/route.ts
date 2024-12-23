@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
   const limit = Number(searchParams.get("limit")) || 10;
   const q = searchParams.get("q");
   const category = searchParams.get("category");
+  const sortBy = searchParams.get("sortBy");
+  const sortDesc = searchParams.get("sortDesc");
 
   const [posts, total] = await prisma.$transaction([
     prisma.post.findMany({
@@ -18,7 +20,7 @@ export async function GET(request: NextRequest) {
         comments: true,
       },
       orderBy: {
-        createdAt: "desc",
+        [sortBy || "createdAt"]: sortDesc ? "desc" : "asc",
       },
       take: limit,
       skip: (page - 1) * limit,

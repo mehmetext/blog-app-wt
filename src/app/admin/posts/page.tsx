@@ -14,11 +14,10 @@ export default async function AdminPostsPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  const { page, q, category, limit } = await postsNuqs.cache.parse(
-    searchParams
-  );
+  const { page, q, category, limit, sortBy, sortDesc } =
+    await postsNuqs.cache.parse(searchParams);
 
-  const posts = await getPosts({ page, q, category, limit });
+  const posts = await getPosts({ page, q, category, limit, sortBy, sortDesc });
 
   return (
     <AdminContainer
@@ -46,6 +45,22 @@ export default async function AdminPostsPage({
             `/admin/posts${postsNuqs.serializer({
               page: pageIndex + 1,
               limit: pageSize as 10 | 20 | 30 | 40 | 50,
+              q,
+              category,
+              sortBy,
+              sortDesc,
+            })}`
+          );
+        }}
+        sorting={[{ id: sortBy, desc: sortDesc }]}
+        onSortingChange={async (sorting) => {
+          "use server";
+          redirect(
+            `/admin/posts${postsNuqs.serializer({
+              sortBy: sorting[0]?.id,
+              sortDesc: sorting[0]?.desc,
+              page,
+              limit,
               q,
               category,
             })}`

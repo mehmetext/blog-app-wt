@@ -61,6 +61,8 @@ export const getPosts = async (params: {
   q: string;
   category?: string | null;
   limit?: number;
+  sortBy?: string;
+  sortDesc?: boolean;
 }) =>
   fetchAPI<
     PaginatedResponse<
@@ -73,7 +75,9 @@ export const getPosts = async (params: {
   >(
     `posts?page=${params.page}&q=${params.q}${
       params.category ? `&category=${params.category}` : ""
-    }${params.limit ? `&limit=${params.limit}` : ""}`
+    }${params.limit ? `&limit=${params.limit}` : ""}${
+      params.sortBy ? `&sortBy=${params.sortBy}` : ""
+    }${params.sortDesc ? `&sortDesc=${params.sortDesc}` : ""}`
   );
 
 export const getPost = async (slug: string) =>

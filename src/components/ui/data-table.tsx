@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -28,6 +29,9 @@ interface DataTableProps<TData, TValue> {
   pageIndex?: number;
   pageSize?: number;
   onPaginationChange?: (pageIndex: number, pageSize: number) => void;
+  manualSorting?: boolean;
+  sorting?: SortingState;
+  onSortingChange?: (sorting: SortingState) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -38,6 +42,9 @@ export function DataTable<TData, TValue>({
   pageIndex = 0,
   pageSize = 10,
   onPaginationChange,
+  manualSorting = false,
+  onSortingChange,
+  sorting,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -49,6 +56,7 @@ export function DataTable<TData, TValue>({
         pageIndex,
         pageSize,
       },
+      sorting,
     },
     onPaginationChange: (updater) => {
       if (typeof updater === "function") {
@@ -59,6 +67,16 @@ export function DataTable<TData, TValue>({
         onPaginationChange?.(newState.pageIndex, newState.pageSize);
       } else {
         onPaginationChange?.(updater.pageIndex, updater.pageSize);
+      }
+    },
+    manualSorting,
+    onSortingChange: (updater) => {
+      if (onSortingChange) {
+        if (typeof updater === "function") {
+          onSortingChange(updater(sorting ?? []));
+        } else {
+          onSortingChange(updater);
+        }
       }
     },
     getCoreRowModel: getCoreRowModel(),
