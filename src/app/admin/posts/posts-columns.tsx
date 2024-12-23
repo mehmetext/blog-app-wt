@@ -6,11 +6,23 @@ import { Category, Comment, Post, User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Edit } from "lucide-react";
+import Link from "next/link";
 
 export default [
   {
     accessorKey: "title",
     header: "Title",
+    cell: ({ row }) => {
+      return (
+        <Link
+          target="_blank"
+          href={`/${row.original.category.slug}/${row.original.slug}`}
+          className="hover:underline"
+        >
+          {row.original.title}
+        </Link>
+      );
+    },
   },
   {
     id: "category",
