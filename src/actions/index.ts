@@ -107,3 +107,10 @@ export const createComment = async (comment: {
       postId: comment.postId,
     },
   });
+
+export const login = async (email: string, password: string) => {
+  await fetch(`${process.env.API_URL}/api/auth/login`, {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+};
