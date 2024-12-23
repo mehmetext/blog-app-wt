@@ -2,15 +2,31 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Muted } from "@/components/ui/typography";
 import { Category } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Edit } from "lucide-react";
+import Link from "next/link";
 
 export default [
   {
     accessorKey: "name",
     header: "Adı",
+    cell: ({ row }) => (
+      <div className="flex flex-col">
+        <span>{row.original.name}</span>
+        <Muted className="text-xs">
+          <Link
+            href={`/${row.original.slug}`}
+            target="_blank"
+            className="hover:underline"
+          >
+            /{row.original.slug}
+          </Link>
+        </Muted>
+      </div>
+    ),
   },
   {
     accessorKey: "createdAt",
