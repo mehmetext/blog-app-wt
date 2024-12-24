@@ -43,7 +43,12 @@ export async function GET(request: NextRequest) {
       include: {
         category: true,
         author: true,
-        comments: true,
+        comments: {
+          where: {
+            deletedAt: null,
+            status: "APPROVED",
+          },
+        },
       },
       orderBy,
       take: limit,
@@ -77,7 +82,11 @@ export async function GET(request: NextRequest) {
                 },
                 {
                   comments: {
-                    some: { content: { contains: q, mode: "insensitive" } },
+                    some: {
+                      content: { contains: q, mode: "insensitive" },
+                      deletedAt: null,
+                      status: "APPROVED",
+                    },
                   },
                 },
               ],
@@ -102,7 +111,11 @@ export async function GET(request: NextRequest) {
                 { content: { contains: q, mode: "insensitive" } },
                 {
                   comments: {
-                    some: { content: { contains: q, mode: "insensitive" } },
+                    some: {
+                      content: { contains: q, mode: "insensitive" },
+                      deletedAt: null,
+                      status: "APPROVED",
+                    },
                   },
                 },
               ],

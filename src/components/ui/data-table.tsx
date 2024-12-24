@@ -99,6 +99,8 @@ export function DataTable<TData, TValue>({
                       key={header.id}
                       style={{
                         minWidth: header.column.columnDef.minSize,
+                        maxWidth: header.column.columnDef.maxSize,
+                        width: header.column.columnDef.size,
                       }}
                     >
                       {header.isPlaceholder

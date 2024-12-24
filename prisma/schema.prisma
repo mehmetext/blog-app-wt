@@ -63,14 +63,21 @@ model Post {
 }
 
 model Comment {
-  id         String  @id @default(cuid())
+  id         String        @id @default(cuid())
   content    String
   postId     String
   authorName String?
+  status     CommentStatus @default(PENDING)
 
   post Post @relation(fields: [postId], references: [id])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }

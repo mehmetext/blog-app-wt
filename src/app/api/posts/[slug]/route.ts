@@ -11,7 +11,12 @@ export async function GET(
     include: {
       category: true,
       author: true,
-      comments: true,
+      comments: {
+        where: {
+          deletedAt: null,
+          status: "APPROVED",
+        },
+      },
     },
     where: {
       slug: slug,
