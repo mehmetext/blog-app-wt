@@ -155,3 +155,14 @@ export const currentUser = async () => {
   const data = await response.json();
   return data.data as User;
 };
+
+export const getUsers = async () => {
+  const response = await fetch(`${process.env.API_URL}/api/users`);
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.data as User[];
+};
