@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Muted } from "@/components/ui/typography";
 import { Category, Comment, Post, User } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
@@ -18,6 +19,7 @@ export default function Comments({
   post: Post & { category: Category; author: User; comments: Comment[] };
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [sent, setSent] = useState(false);
   const [content, setContent] = useState<string>("");
   const [name, setName] = useState<string>("");
   const router = useRouter();
@@ -41,6 +43,7 @@ export default function Comments({
             });
             router.refresh();
             setIsLoading(false);
+            setSent(true);
             setContent("");
             setName("");
           }}
@@ -64,6 +67,12 @@ export default function Comments({
             </Button>
           </div>
         </form>
+
+        {sent && (
+          <Muted>
+            Yorumunuz gönderildi. Onaylandıktan sonra yayınlanacaktır.
+          </Muted>
+        )}
 
         {/* Yorumlar Listesi */}
         <div className="space-y-4">
