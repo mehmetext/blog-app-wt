@@ -2,6 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "@/components/ui/data-table-header";
 import {
   DropdownMenu,
@@ -21,6 +22,24 @@ export default function commentsColumns({
   onStatusChange: (id: string, status: CommentStatus) => Promise<void>;
 }): ColumnDef<Comment & { post: Post & { category: Category } }>[] {
   return [
+    {
+      id: "select",
+      size: 10,
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllRowsSelected()}
+          onCheckedChange={(checked) => table.toggleAllRowsSelected(!!checked)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(checked) => row.toggleSelected(!!checked)}
+          aria-label="Select row"
+        />
+      ),
+    },
     {
       accessorKey: "content",
       header: ({ column }) => (
