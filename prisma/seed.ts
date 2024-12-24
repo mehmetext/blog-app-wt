@@ -1,9 +1,98 @@
-import { PrismaClient } from "@prisma/client";
+import { CommentStatus, PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { sub } from "date-fns";
 import slugify from "slugify";
 
 const prisma = new PrismaClient();
+
+const postTemplates = {
+  teknoloji: [
+    "Yapay Zeka'nın İş Dünyasına Etkileri",
+    "Web 3.0 ve Blockchain Teknolojisi",
+    "Siber Güvenlik: Güncel Tehditler ve Önlemler",
+    "5G Teknolojisi ve Geleceği",
+    "Metaverse: Sanal Gerçekliğin Yeni Boyutu",
+    "Türkiye'de Yazılım Geliştirme Trendleri",
+    "Mobil Uygulama Geliştirme Rehberi",
+    "Veri Bilimi ve Yapay Zeka Uygulamaları",
+  ],
+  seyahat: [
+    "Kapadokya'da Balon Turu Deneyimi",
+    "Ege'nin İncisi: Çeşme Gezi Rehberi",
+    "İstanbul'un Gizli Kalmış Köşeleri",
+    "Doğu Ekspresi ile Unutulmaz Bir Yolculuk",
+    "Karadeniz Yaylalarında Bir Hafta",
+    "Likya Yolu'nda Trekking Macerası",
+    "Mardin'in Tarihi Sokaklarında",
+    "Pamukkale Travertenlerinin Büyüsü",
+  ],
+  "yemek-mutfak": [
+    "Geleneksel Türk Kahvaltısı Hazırlama",
+    "En İyi Mantı Yapmanın Püf Noktaları",
+    "Ev Yapımı Lahmacun Tarifi",
+    "Osmanlı Mutfağından Seçme Tarifler",
+    "Zeytinyağlı Yemekler Rehberi",
+    "Türk Tatlıları: Baklava Yapımı",
+    "Anadolu'nun Yöresel Lezzetleri",
+    "Sokak Lezzetleri: Kokoreç ve Midye",
+  ],
+  "saglik-yasam": [
+    "Sağlıklı Beslenme İlkeleri",
+    "Yoga ile Stres Yönetimi",
+    "Doğal Detoks Yöntemleri",
+    "Bağışıklık Sistemini Güçlendirme",
+    "Evde Spor Rutini Oluşturma",
+    "Meditasyon ve Mindfulness Rehberi",
+    "Sağlıklı Uyku için İpuçları",
+    "Doğal Cilt Bakım Önerileri",
+  ],
+  "kisisel-gelisim": [
+    "Etkili Zaman Yönetimi Teknikleri",
+    "İş Hayatında İletişim Becerileri",
+    "Finansal Özgürlük için Stratejiler",
+    "Kişisel Marka Oluşturma Rehberi",
+    "Stres Yönetimi ve Motivasyon",
+    "Kariyer Planlama İpuçları",
+    "Liderlik Becerileri Geliştirme",
+    "Etkili Sunum Teknikleri",
+  ],
+  bilim: [
+    "Türk Bilim İnsanlarının Başarıları",
+    "Uzay Araştırmalarında Son Gelişmeler",
+    "İklim Değişikliği ve Türkiye",
+    "Kuantum Bilgisayarlar",
+    "Genetik Mühendisliğinin Geleceği",
+    "Yenilenebilir Enerji Kaynakları",
+    "Nörobilim ve Beyin Araştırmaları",
+    "CERN ve Parçacık Fiziği",
+  ],
+};
+
+const commentTemplates = [
+  "Harika bir yazı olmuş, teşekkürler!",
+  "Bu konuda çok faydalı bilgiler var.",
+  "Yazıyı büyük bir ilgiyle okudum.",
+  "Özellikle son bölüm çok etkileyiciydi.",
+  "Daha fazla içerik bekliyoruz.",
+  "Konuyu çok güzel açıklamışsınız.",
+  "Bu bilgiler tam da aradığım şeylerdi.",
+  "Çok detaylı ve bilgilendirici olmuş.",
+  "Kesinlikle katılıyorum, süper bir analiz.",
+  "Farklı bir bakış açısı kazandırdınız.",
+];
+
+const authorNames = [
+  "Ahmet Yılmaz",
+  "Ayşe Demir",
+  "Mehmet Kaya",
+  "Zeynep Çelik",
+  "Can Öztürk",
+  "Elif Yıldız",
+  "Mustafa Aydın",
+  "Deniz Şahin",
+  "Gül Aksoy",
+  "Emre Koç",
+];
 
 async function main() {
   // Clean the database
@@ -24,16 +113,16 @@ async function main() {
     }),
     prisma.user.create({
       data: {
-        email: "ahmet@example.com",
-        name: "Ahmet Yılmaz",
+        email: "yazar@example.com",
+        name: "Yazar Kullanıcı",
         role: "USER",
         hashedPassword: bcrypt.hashSync("123456", 10),
       },
     }),
     prisma.user.create({
       data: {
-        email: "ayse@example.com",
-        name: "Ayşe Demir",
+        email: "editor@example.com",
+        name: "Editör Kullanıcı",
         role: "USER",
         hashedPassword: bcrypt.hashSync("123456", 10),
       },
@@ -86,202 +175,115 @@ async function main() {
     return sub(new Date(), { days: daysAgo });
   };
 
-  // Sample post titles and content templates
-  const postTemplates = [
-    {
-      tech: [
-        "2024'te Yapay Zeka'nın Geleceği",
-        "WebAssembly'yi Derinlemesine Anlamak",
-        "Next.js ile Ölçeklenebilir Uygulamalar",
-        "Rust ve Go: Performans Karşılaştırması",
-        "Kuantum Bilişime Giriş",
-      ],
-      travel: [
-        "Güneydoğu Asya'nın Gizli Cennetleri",
-        "İsviçre Alpleri'nde Bir Hafta",
-        "Avrupa Bütçe Seyahat Rehberi",
-        "Asya'nın En İyi Sokak Lezzetleri",
-        "Macera Seyahati: Patagonya Keşfi",
-      ],
-      food: [
-        "Geleneksel Türk Mutfağı Tarifleri",
-        "Vegan Yemek Pişirme Rehberi",
-        "Dünya Mutfakları Füzyon Rehberi",
-        "Mevsimsel Yemek: Bahar Tarifleri",
-        "Ev Yapımı Ekmek Tarifleri",
-      ],
-      health: [
-        "Mindfulness Meditasyon Rehberi",
-        "Bitkisel Beslenmenin Faydaları",
-        "Evde Spor Rutinleri",
-        "Kaliteli Uyku İpuçları",
-        "Stres Yönetimi Teknikleri",
-      ],
-      development: [
-        "Etkili Alışkanlık Oluşturma",
-        "Zaman Yönetimi Stratejileri",
-        "Etkili İletişim Becerileri",
-        "Finansal Planlama 101",
-        "Hedef Belirleme Teknikleri",
-      ],
-      science: [
-        "Astronomi'de Son Keşifler",
-        "İklim Değişikliğini Anlamak",
-        "Genetik Alanındaki Gelişmeler",
-        "Uykunun Bilimi",
-        "Nörobilim Temelleri",
-      ],
-    },
-  ];
+  // Helper function to get random content for a category
+  const getRandomContent = (categorySlug: string, title: string) => {
+    const baseContent = `# ${title}
 
-  // Create 50 posts
-  const posts = [];
-  for (let i = 1; i <= 50; i++) {
-    const createdAt = randomPastDate(365);
-    const category = categories[Math.floor(Math.random() * categories.length)];
-    const author = users[Math.floor(Math.random() * users.length)];
-
-    let titles;
-    switch (category.slug) {
-      case "teknoloji":
-        titles = postTemplates[0].tech;
-        break;
-      case "seyahat":
-        titles = postTemplates[0].travel;
-        break;
-      case "yemek-mutfak":
-        titles = postTemplates[0].food;
-        break;
-      case "saglik-yasam":
-        titles = postTemplates[0].health;
-        break;
-      case "kisisel-gelisim":
-        titles = postTemplates[0].development;
-        break;
-      case "bilim":
-        titles = postTemplates[0].science;
-        break;
-      default:
-        titles = postTemplates[0].tech;
-    }
-
-    const title = `${titles[Math.floor(Math.random() * titles.length)]} ${i}`;
-    const slug = slugify(title, { lower: true, strict: true });
-
-    const post = await prisma.post.create({
-      data: {
-        title,
-        slug,
-        content: `# ${title}
-
-${
-  category.slug === "teknoloji"
-    ? `
-Teknoloji dünyası her geçen gün hızla gelişmeye devam ediyor. Bu yazıda, son gelişmeleri ve gelecekteki etkilerini inceliyoruz.
-
-## Önemli Noktalar
-
-- Temel kavramlar
-- Pratik uygulamalar
-- Gelecekteki etkiler
-- En iyi uygulamalar
-
-### Teknik Detaylar
-
-\`\`\`javascript
-// Örnek kod implementasyonu
-const uygula = async (veri) => {
-  const sonuc = await veriIsleme(veri);
-  return optimize(sonuc);
-};
-\`\`\`
-
-## Gerçek Dünya Uygulamaları
-
-1. Kurumsal çözümler
-2. Tüketici uygulamaları
-3. Araştırma ve geliştirme
-4. Eğitim amaçlı kullanım
-
-`
-    : `
 ## Giriş
 
-Bu kapsamlı rehber, ${title.toLowerCase()} hakkında bilmeniz gereken her şeyi size anlatacak. Temel kavramları, ileri düzey teknikleri ve hemen uygulayabileceğiniz pratik ipuçlarını ele alacağız.
+Bu yazımızda ${title.toLowerCase()} konusunu detaylıca ele alacağız. 
 
-### Önemli Noktalar
+## Ana Başlıklar
 
-1. Temel kavramlar
-2. Pratik uygulamalar
-3. Uzman ipuçları
-4. Sık yapılan hatalar
+1. Temel Kavramlar
+2. Önemli Noktalar
+3. Pratik Uygulamalar
+4. Sık Sorulan Sorular
 
 ## Detaylı İnceleme
 
-Bu bilgileri günlük hayatınızda nasıl en iyi şekilde kullanabileceğinizi inceleyelim.
-
-### En İyi Uygulamalar
-
-- Temelden başlayın
-- Düzenli pratik yapın
-- Uzmanlardan öğrenin
-- Güncel kalın
-
+${
+  categorySlug === "teknoloji"
+    ? `
+\`\`\`javascript
+// Örnek kod
+const teknoloji = {
+  yapayZeka: true,
+  blockchain: "gelecek",
+  veri: "değerli"
+};
+\`\`\`
 `
+    : ""
 }
+
+### Önemli Noktalar
+
+- ${title} hakkında bilinmesi gerekenler
+- Güncel gelişmeler ve trendler
+- Pratik ipuçları
+- Uzman görüşleri
 
 ## Sonuç
 
-Bu yazıda ${title.toLowerCase()} konusunun temel yönlerini ele aldık. Umarız bu bilgiler size faydalı olmuştur.
+Bu yazımızda ${title.toLowerCase()} konusunu detaylıca ele aldık. Umarız faydalı olmuştur.
 
-Daha fazla bilgi için ilgili yazılarımıza göz atabilir veya aşağıda yorum bırakabilirsiniz.`,
-        coverImage: `https://picsum.photos/seed/${i}/1200/630`,
-        categoryId: category.id,
-        authorId: author.id,
-        createdAt,
-        updatedAt: createdAt,
-      },
-    });
+### Kaynaklar
 
-    // Add 2-5 comments for each post
-    const numComments = Math.floor(Math.random() * 4) + 2;
-    const commentTemplates = [
-      "Harika bir yazı olmuş! Özellikle şu kısım çok iyiydi:",
-      "Bu çok faydalı oldu. Tam da şu konu hakkında bilgi arıyordum:",
-      "İlginç bir bakış açısı sunmuşsunuz:",
-      "Paylaşım için teşekkürler! Şu konuda çok şey öğrendim:",
-      "Çok iyi yazılmış ve bilgilendirici bir yazı:",
-      "Bu konuyu uzun zamandır takip ediyordum, güzel bir içgörü sunmuşsunuz:",
-      "Örnekler konuyu anlamama çok yardımcı oldu:",
-      "Daha fazla içerik bekliyoruz şu konuda:",
-    ];
+1. Türkiye'deki araştırmalar
+2. Uluslararası kaynaklar
+3. Uzman görüşleri
+4. Güncel istatistikler`;
 
-    for (let j = 1; j <= numComments; j++) {
-      const commentTemplate =
-        commentTemplates[Math.floor(Math.random() * commentTemplates.length)];
-      await prisma.comment.create({
+    return baseContent;
+  };
+
+  // Create posts
+  const posts = [];
+  for (const category of categories) {
+    const titles = postTemplates[category.slug as keyof typeof postTemplates];
+
+    for (const title of titles) {
+      const createdAt = randomPastDate(365);
+      const author = users[Math.floor(Math.random() * users.length)];
+      const slug = slugify(title, { lower: true, strict: true });
+
+      const post = await prisma.post.create({
         data: {
-          content: `${commentTemplate} ${title.toLowerCase()}. ${
-            j === 1
-              ? "Yeni içeriklerinizi merakla bekliyorum!"
-              : j === 2
-              ? "Devamı için sabırsızlanıyorum."
-              : "Teşekkürler!"
-          }`,
-          authorName: `Okuyucu ${Math.floor(Math.random() * 100) + 1}`,
-          postId: post.id,
-          createdAt: sub(createdAt, { hours: Math.random() * 24 * 7 }),
+          title,
+          slug,
+          content: getRandomContent(category.slug, title),
+          coverImage: `https://picsum.photos/seed/${slug}/1200/630`,
+          categoryId: category.id,
+          authorId: author.id,
+          createdAt,
+          updatedAt: createdAt,
         },
       });
-    }
 
-    posts.push(post);
+      // Add 2-5 comments for each post
+      const numComments = Math.floor(Math.random() * 4) + 2;
+      for (let j = 0; j < numComments; j++) {
+        const commentCreatedAt = sub(createdAt, {
+          hours: Math.floor(Math.random() * 24 * 7),
+        });
+
+        await prisma.comment.create({
+          data: {
+            content:
+              commentTemplates[
+                Math.floor(Math.random() * commentTemplates.length)
+              ],
+            authorName:
+              authorNames[Math.floor(Math.random() * authorNames.length)],
+            postId: post.id,
+            status: ["PENDING", "APPROVED", "APPROVED", "APPROVED"][
+              Math.floor(Math.random() * 4)
+            ] as CommentStatus,
+            createdAt: commentCreatedAt,
+            updatedAt: commentCreatedAt,
+          },
+        });
+      }
+
+      posts.push(post);
+    }
   }
 
-  console.log(`Veritabanı başarıyla dolduruldu. 🌱`);
+  console.log(`Veritabanı başarıyla dolduruldu! 🌱`);
   console.log(`${users.length} kullanıcı oluşturuldu`);
   console.log(`${categories.length} kategori oluşturuldu`);
-  console.log(`${posts.length} yazı oluşturuldu`);
+  console.log(`${posts.length} gönderi oluşturuldu`);
 }
 
 main()
