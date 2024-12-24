@@ -7,14 +7,14 @@ import { FileText, FolderTree, MessageSquare, Users } from "lucide-react";
 import Link from "next/link";
 
 export default async function StatsOverview() {
-  const posts = await getPosts({});
+  const posts = await getPosts({ limit: 5000 });
   const categories = await getCategories();
   const users = await getUsers();
 
   const stats = [
     {
       title: "Total Posts",
-      value: 10,
+      value: posts.items.length,
       icon: FileText,
       href: "/admin/posts",
     },
@@ -32,7 +32,7 @@ export default async function StatsOverview() {
     },
     {
       title: "Comments",
-      value: 10,
+      value: posts.items.reduce((acc, post) => acc + post.comments.length, 0),
       icon: MessageSquare,
       href: "/admin/comments",
     },
