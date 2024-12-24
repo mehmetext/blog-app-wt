@@ -1,4 +1,4 @@
-import { getComments } from "@/actions";
+import { getComments, updateCommentStatus } from "@/actions";
 import { H3 } from "@/components/ui/typography";
 import commentsNuqs from "@/lib/nuqs/comments";
 import { redirect } from "next/navigation";
@@ -56,6 +56,19 @@ export default async function AdminCommentsPage({
             `/admin/comments${commentsNuqs.serializer({
               sortBy: sorting[0]?.id,
               sortDesc: sorting[0]?.desc,
+              page,
+              limit,
+              q,
+            })}`
+          );
+        }}
+        onStatusChange={async (id, status) => {
+          "use server";
+          await updateCommentStatus(id, status);
+          redirect(
+            `/admin/comments${commentsNuqs.serializer({
+              sortBy,
+              sortDesc,
               page,
               limit,
               q,

@@ -1,6 +1,6 @@
 "use server";
 
-import { Category, Comment, Post, User } from "@prisma/client";
+import { Category, Comment, CommentStatus, Post, User } from "@prisma/client";
 import { cookies } from "next/headers";
 
 export const getPosts = async (params: {
@@ -190,4 +190,21 @@ export const getComments = async (params: {
   return data.data as PaginatedResponse<
     Comment & { post: Post & { category: Category } }
   >;
+};
+
+export const updateCommentStatus = async (
+  id: string,
+  status: CommentStatus
+) => {
+  const response = await fetch(`${process.env.API_URL}/api/comments`, {
+    method: "PUT",
+    body: JSON.stringify({ id, status }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.data as Comment;
 };

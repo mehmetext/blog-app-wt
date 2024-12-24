@@ -75,7 +75,7 @@ export default function Comments({
               <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <span className="font-medium">{comment.authorName}</span>
                 <span>
-                  {formatDistanceToNow(new Date(), {
+                  {formatDistanceToNow(comment.createdAt, {
                     addSuffix: true,
                     locale: tr,
                   })}

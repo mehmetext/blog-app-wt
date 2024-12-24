@@ -2,6 +2,33 @@ import prisma from "@/lib/prisma";
 import { Comment, Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function POST(req: NextRequest) {
+  const comment = await req.json();
+  const { content, authorName, postId } = comment;
+
+  const newComment = await prisma.comment.create({
+    data: {
+      content,
+      authorName,
+      postId,
+    },
+  });
+
+  return NextResponse.json({ data: newComment }, { status: 201 });
+}
+
+export async function PUT(req: NextRequest) {
+  const comment = await req.json();
+  const { id, status } = comment;
+
+  const updatedComment = await prisma.comment.update({
+    where: { id },
+    data: { status },
+  });
+
+  return NextResponse.json({ data: updatedComment }, { status: 200 });
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
@@ -94,19 +121,4 @@ export async function GET(request: NextRequest) {
       pageCount: Math.ceil(total / limit),
     },
   });
-}
-
-export async function POST(req: NextRequest) {
-  const comment = await req.json();
-  const { content, authorName, postId } = comment;
-
-  const newComment = await prisma.comment.create({
-    data: {
-      content,
-      authorName,
-      postId,
-    },
-  });
-
-  return NextResponse.json({ data: newComment }, { status: 201 });
 }

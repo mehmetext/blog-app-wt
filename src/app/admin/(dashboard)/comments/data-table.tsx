@@ -1,7 +1,7 @@
 "use client";
 
 import { DataTable } from "@/components/ui/data-table";
-import { Category, Comment, Post } from "@prisma/client";
+import { Category, Comment, CommentStatus, Post } from "@prisma/client";
 import { SortingState } from "@tanstack/react-table";
 import commentsColumns from "./comments-columns";
 
@@ -12,6 +12,7 @@ export default function CommentsDataTable({
   onPaginationChange,
   onSortingChange,
   sorting,
+  onStatusChange,
 }: {
   comments: PaginatedResponse<
     Comment & { post: Post & { category: Category } }
@@ -21,10 +22,11 @@ export default function CommentsDataTable({
   onPaginationChange: (pageIndex: number, pageSize: number) => void;
   onSortingChange: (sorting: SortingState) => void;
   sorting: SortingState;
+  onStatusChange: (id: string, status: CommentStatus) => Promise<void>;
 }) {
   return (
     <DataTable
-      columns={commentsColumns}
+      columns={commentsColumns({ onStatusChange })}
       data={comments.items}
       manualPagination
       pageCount={comments.pageCount}
