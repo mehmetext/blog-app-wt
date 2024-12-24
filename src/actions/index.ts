@@ -1,6 +1,7 @@
 "use server";
 
 import { Category, Comment, Post, User } from "@prisma/client";
+import { cookies } from "next/headers";
 
 export const getPosts = async (params: {
   page: number;
@@ -88,4 +89,44 @@ export const createComment = async (comment: {
 
   const data = await response.json();
   return data.data as Comment;
+};
+
+export const login = async (email: string, password: string) => {
+  const cookieList = await cookies();
+
+  const response = await fetch(`${process.env.API_URL}/api/auth/login`, {
+    method: "POST",
+    headers: {
+      Cookie: cookieList
+        .getAll()
+        .map((cookie) => `${cookie.name}=${cookie.value}`)
+        .join("; "),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    return { status: false, code: data.error };
+  }
+
+  cookieList.set({
+    name: "access-token",
+    value: data.data.accessToken,
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 1, // 1 minute
+  });
+
+  cookieList.set({
+    name: "refresh-token",
+    value: data.data.refreshToken,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 5, // 5 minutes
+  });
+
+  return { status: true, code: "login-success" };
 };

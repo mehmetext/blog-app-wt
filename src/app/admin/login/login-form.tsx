@@ -1,5 +1,6 @@
 "use client";
 
+import { login } from "@/actions";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,17 +12,25 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(email, password);
+    const { status, code } = await login(email, password);
+
+    if (status) {
+      router.push("/admin");
+    } else {
+      alert(code);
+    }
   };
 
   return (
