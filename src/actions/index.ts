@@ -4,19 +4,21 @@ import { Category, Comment, Post, User } from "@prisma/client";
 import { cookies } from "next/headers";
 
 export const getPosts = async (params: {
-  page: number;
-  q: string;
+  page?: number;
+  q?: string;
   category?: string | null;
   limit?: number;
   sortBy?: string;
   sortDesc?: boolean;
 }) => {
   const response = await fetch(
-    `${process.env.API_URL}/api/posts?page=${params.page}&q=${params.q}${
-      params.category ? `&category=${params.category}` : ""
-    }${params.limit ? `&limit=${params.limit}` : ""}${
-      params.sortBy ? `&sortBy=${params.sortBy}` : ""
-    }${params.sortDesc ? `&sortDesc=${params.sortDesc}` : ""}`
+    `${process.env.API_URL}/api/posts?page=${params.page ?? 1}${
+      params.q ? `&q=${params.q}` : ""
+    }${params.category ? `&category=${params.category}` : ""}${
+      params.limit ? `&limit=${params.limit}` : ""
+    }${params.sortBy ? `&sortBy=${params.sortBy}` : ""}${
+      params.sortDesc ? `&sortDesc=${params.sortDesc}` : ""
+    }`
   );
 
   if (!response.ok) {

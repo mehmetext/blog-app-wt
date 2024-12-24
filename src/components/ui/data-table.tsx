@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Card } from "./card";
 import { DataTableViewOptions } from "./data-table-column-toggle";
 import { DataTablePagination } from "./data-table-pagination";
 
@@ -87,7 +88,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="flex flex-col gap-4">
       <DataTableViewOptions table={table} />
-      <div className="rounded-md border">
+      <Card>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -141,7 +142,7 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
+      </Card>
       <DataTablePagination table={table} />
     </div>
   );
