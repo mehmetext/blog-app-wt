@@ -38,6 +38,8 @@ export function LoginForm({
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 id="email"
                 type="email"
                 placeholder="m@example.com"
@@ -48,7 +50,13 @@ export function LoginForm({
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
               </div>
-              <Input id="password" type="password" required />
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                id="password"
+                type="password"
+                required
+              />
             </div>
             <Button type="submit" className="w-full">
               Login
