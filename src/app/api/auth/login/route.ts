@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { compare } from "bcrypt";
+import { SignJWT } from "jose";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -21,8 +22,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "invalid-credentials" }, { status: 401 });
   }
 
-  const accessToken = "example-access-token";
-  const refreshToken = "example-refresh-token";
+  const accessToken = await new SignJWT()
+    .setSubject(user.id)
+    .setProtectedHeader({ alg: "HS256", typ: "JWT" })
+    .setIssuedAt()
+    .setExpirationTime("1m")
+    .sign(new TextEncoder().encode(process.env.JWT_SECRET));
+
+  const refreshToken = await new SignJWT()
+    .setSubject(user.id)
+    .setProtectedHeader({ alg: "HS256", typ: "JWT" })
+    .setIssuedAt()
+    .setExpirationTime("5m")
+    .sign(new TextEncoder().encode(process.env.JWT_REFRESH_SECRET));
 
   return NextResponse.json({
     data: { accessToken, refreshToken },
