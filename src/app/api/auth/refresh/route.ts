@@ -1,4 +1,5 @@
-import { jwtVerify, SignJWT } from "jose";
+import { generateTokens } from "@/lib/utils";
+import { jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -14,22 +15,8 @@ export async function GET(req: NextRequest) {
       new TextEncoder().encode(process.env.JWT_REFRESH_SECRET)
     );
 
-    const accessToken = await new SignJWT()
-      .setSubject(payload.sub!)
-      .setProtectedHeader({ alg: "HS256", typ: "JWT" })
-      .setIssuedAt()
-      .setExpirationTime("5m")
-      .sign(new TextEncoder().encode(process.env.JWT_SECRET));
-
-    const newRefreshToken = await new SignJWT()
-      .setSubject(payload.sub!)
-      .setProtectedHeader({ alg: "HS256", typ: "JWT" })
-      .setIssuedAt()
-      .setExpirationTime("1h")
-      .sign(new TextEncoder().encode(process.env.JWT_REFRESH_SECRET));
-
     return NextResponse.json({
-      data: { accessToken, refreshToken: newRefreshToken },
+      data: { ...(await generateTokens(payload.sub!)) },
     });
   } catch {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
