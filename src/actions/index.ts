@@ -187,5 +187,7 @@ export const getComments = async (params: {
   }
 
   const data = await response.json();
-  return data.data as PaginatedResponse<Comment & { post: Post }>;
+  return data.data as PaginatedResponse<
+    Comment & { post: Post & { category: Category } }
+  >;
 };

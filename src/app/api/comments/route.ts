@@ -30,7 +30,11 @@ export async function GET(request: NextRequest) {
   const [comments, total] = await prisma.$transaction([
     prisma.comment.findMany({
       include: {
-        post: true,
+        post: {
+          include: {
+            category: true,
+          },
+        },
       },
       orderBy,
       take: limit,

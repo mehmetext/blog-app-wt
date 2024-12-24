@@ -3,10 +3,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DataTableColumnHeader } from "@/components/ui/data-table-header";
-import { Comment, Post } from "@prisma/client";
+import { Category, Comment, Post } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Edit } from "lucide-react";
+import Link from "next/link";
 
 export default [
   {
@@ -35,7 +36,15 @@ export default [
       <DataTableColumnHeader column={column} title="Gönderi" />
     ),
     cell: ({ row }) => {
-      return row.original.post.title;
+      return (
+        <Link
+          href={`/${row.original.post.category.slug}/${row.original.post.slug}`}
+          target="_blank"
+          className="hover:underline"
+        >
+          {row.original.post.title}
+        </Link>
+      );
     },
   },
   {
@@ -88,4 +97,4 @@ export default [
       );
     },
   },
-] as ColumnDef<Comment & { post: Post }>[];
+] as ColumnDef<Comment & { post: Post & { category: Category } }>[];
