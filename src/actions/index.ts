@@ -130,3 +130,26 @@ export const login = async (email: string, password: string) => {
 
   return { status: true, code: "login-success" };
 };
+
+export const currentUser = async () => {
+  const cookieList = await cookies();
+
+  const accessToken = cookieList.get("access-token")?.value;
+
+  if (!accessToken) {
+    return null;
+  }
+
+  const response = await fetch(`${process.env.API_URL}/api/auth/current-user`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = await response.json();
+  return data.data as User;
+};
