@@ -7,7 +7,7 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="mb-4">
       <Sidebar />
       {children}
     </SidebarProvider>
