@@ -12,9 +12,9 @@ export default [
   {
     accessorKey: "content",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Başlık" />
+      <DataTableColumnHeader column={column} title="Yorum" />
     ),
-    minSize: 200,
+    minSize: 300,
     cell: ({ row }) => {
       return row.original.content;
     },
@@ -24,7 +24,6 @@ export default [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Yazar" />
     ),
-    minSize: 120,
     cell: ({ row }) => {
       return row.original.authorName ?? "Anonim";
     },
