@@ -7,14 +7,35 @@ import { Category, Comment, Post, User } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { Edit } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export default [
+  {
+    accessorKey: "coverImage",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Resim" />
+    ),
+    minSize: 100,
+    enableSorting: false,
+    cell: ({ row }) => {
+      return (
+        <Image
+          src={row.original.coverImage}
+          alt={row.original.title}
+          width={100}
+          height={100}
+          className="rounded-md"
+        />
+      );
+    },
+  },
   {
     accessorKey: "title",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Başlık" />
     ),
+    minSize: 200,
     cell: ({ row }) => {
       return (
         <Link
@@ -33,6 +54,7 @@ export default [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Kategori" />
     ),
+    minSize: 120,
     cell: ({ row }) => {
       return row.original.category.name;
     },
@@ -42,6 +64,7 @@ export default [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Yazar" />
     ),
+    minSize: 120,
     cell: ({ row }) => {
       return row.original.author.name;
     },
