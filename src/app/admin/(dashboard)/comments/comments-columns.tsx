@@ -22,6 +22,7 @@ export default function commentsColumns({
   onStatusChange: (id: string, status: CommentStatus) => Promise<void>;
 }): ColumnDef<Comment & { post: Post & { category: Category } }>[] {
   return [
+    // TODO: update logic for selecting rows
     {
       id: "select",
       size: 10,
