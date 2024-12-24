@@ -117,7 +117,7 @@ export const login = async (email: string, password: string) => {
     value: data.data.accessToken,
     httpOnly: false,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 1, // 1 minute
+    maxAge: 60 * 5, // 5 minutes
   });
 
   cookieList.set({
@@ -125,7 +125,7 @@ export const login = async (email: string, password: string) => {
     value: data.data.refreshToken,
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 5, // 5 minutes
+    maxAge: 60 * 60, // 1 hour
   });
 
   return { status: true, code: "login-success" };

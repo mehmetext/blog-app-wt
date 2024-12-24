@@ -26,14 +26,14 @@ export async function POST(request: Request) {
     .setSubject(user.id)
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setIssuedAt()
-    .setExpirationTime("1m")
+    .setExpirationTime("5m")
     .sign(new TextEncoder().encode(process.env.JWT_SECRET));
 
   const refreshToken = await new SignJWT()
     .setSubject(user.id)
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setIssuedAt()
-    .setExpirationTime("5m")
+    .setExpirationTime("1h")
     .sign(new TextEncoder().encode(process.env.JWT_REFRESH_SECRET));
 
   return NextResponse.json({
