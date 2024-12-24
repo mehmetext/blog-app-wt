@@ -166,3 +166,26 @@ export const getUsers = async () => {
   const data = await response.json();
   return data.data as User[];
 };
+
+export const getComments = async (params: {
+  page?: number;
+  q?: string;
+  limit?: number;
+  sortBy?: string;
+  sortDesc?: boolean;
+}) => {
+  const response = await fetch(
+    `${process.env.API_URL}/api/comments?page=${params.page ?? 1}${
+      params.q ? `&q=${params.q}` : ""
+    }${params.limit ? `&limit=${params.limit}` : ""}${
+      params.sortBy ? `&sortBy=${params.sortBy}` : ""
+    }${params.sortDesc ? `&sortDesc=${params.sortDesc}` : ""}`
+  );
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.data as PaginatedResponse<Comment & { post: Post }>;
+};

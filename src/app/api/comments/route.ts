@@ -1,5 +1,96 @@
 import prisma from "@/lib/prisma";
+import { Comment, Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+
+  const page =
+    Number(searchParams.get("page")) < 1 ? 1 : Number(searchParams.get("page"));
+  const limit = Number(searchParams.get("limit")) || 10;
+  const q = searchParams.get("q");
+  const sortBy = searchParams.get("sortBy");
+  const sortDesc = searchParams.get("sortDesc");
+
+  const orderBy: Prisma.CommentOrderByWithRelationInput = {};
+
+  if (sortBy) {
+    switch (sortBy) {
+      case "postTitle":
+        orderBy.post = {
+          title: sortDesc ? "desc" : "asc",
+        };
+        break;
+      default:
+        orderBy[sortBy as keyof Comment] = sortDesc ? "desc" : "asc";
+        break;
+    }
+  }
+
+  const [comments, total] = await prisma.$transaction([
+    prisma.comment.findMany({
+      include: {
+        post: true,
+      },
+      orderBy,
+      take: limit,
+      skip: (page - 1) * limit,
+      where: {
+        // Only show posts that are not deleted
+        deletedAt: null,
+        ...(q
+          ? {
+              OR: [
+                {
+                  content: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  authorName: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            }
+          : {}),
+      },
+    }),
+    prisma.comment.count({
+      where: {
+        deletedAt: null,
+        ...(q
+          ? {
+              OR: [
+                {
+                  content: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  authorName: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            }
+          : {}),
+      },
+    }),
+  ]);
+
+  return NextResponse.json({
+    data: {
+      items: comments,
+      limit,
+      pageCount: Math.ceil(total / limit),
+    },
+  });
+}
 
 export async function POST(req: NextRequest) {
   const comment = await req.json();

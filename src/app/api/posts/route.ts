@@ -27,9 +27,6 @@ export async function GET(request: NextRequest) {
           name: sortDesc ? "desc" : "asc",
         };
         break;
-      case "deletedAt":
-        orderBy.deletedAt = sortDesc ? "desc" : "asc";
-        break;
       case "category":
         orderBy.category = {
           name: sortDesc ? "desc" : "asc",
