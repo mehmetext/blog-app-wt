@@ -193,7 +193,7 @@ export const getComments = async (params: {
 };
 
 export const updateCommentStatus = async (
-  id: string,
+  id: string | string[],
   status: CommentStatus
 ) => {
   const response = await fetch(`${process.env.API_URL}/api/comments`, {
@@ -206,5 +206,6 @@ export const updateCommentStatus = async (
   }
 
   const data = await response.json();
-  return data.data as Comment;
+
+  return Array.isArray(id) ? (data.data as Comment[]) : (data.data as Comment);
 };

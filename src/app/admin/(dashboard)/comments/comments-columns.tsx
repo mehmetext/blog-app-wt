@@ -146,20 +146,22 @@ export default function commentsColumns({
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem
+                className="justify-between"
                 onClick={async () => {
                   await onStatusChange(row.original.id, "APPROVED");
                 }}
               >
-                <Check />
                 Onayla
+                <Check />
               </DropdownMenuItem>
               <DropdownMenuItem
+                className="justify-between"
                 onClick={async () => {
                   await onStatusChange(row.original.id, "REJECTED");
                 }}
               >
-                <X />
                 Reddet
+                <X />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

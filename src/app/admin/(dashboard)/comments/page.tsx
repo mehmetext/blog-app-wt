@@ -75,6 +75,19 @@ export default async function AdminCommentsPage({
             })}`
           );
         }}
+        onBatchStatusChange={async (ids, status) => {
+          "use server";
+          await updateCommentStatus(ids, status);
+          redirect(
+            `/admin/comments${commentsNuqs.serializer({
+              sortBy,
+              sortDesc,
+              page,
+              limit,
+              q,
+            })}`
+          );
+        }}
       />
     </AdminContainer>
   );

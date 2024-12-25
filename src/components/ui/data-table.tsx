@@ -6,6 +6,7 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  Row,
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
@@ -33,6 +34,11 @@ interface DataTableProps<TData, TValue> {
   manualSorting?: boolean;
   sorting?: SortingState;
   onSortingChange?: (sorting: SortingState) => void;
+  operations?: {
+    label: string;
+    icon: React.ComponentType;
+    onClick: (rows: Row<TData>[]) => Promise<void>;
+  }[];
 }
 
 export function DataTable<TData, TValue>({
@@ -46,6 +52,7 @@ export function DataTable<TData, TValue>({
   manualSorting = false,
   onSortingChange,
   sorting,
+  operations,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -87,7 +94,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-4">
-      <DataTableViewOptions table={table} />
+      <DataTableViewOptions table={table} operations={operations} />
       <Card>
         <Table>
           <TableHeader>

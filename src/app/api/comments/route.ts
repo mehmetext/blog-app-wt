@@ -21,12 +21,21 @@ export async function PUT(req: NextRequest) {
   const comment = await req.json();
   const { id, status } = comment;
 
-  const updatedComment = await prisma.comment.update({
-    where: { id },
-    data: { status },
-  });
+  if (Array.isArray(id)) {
+    const updatedComments = await prisma.comment.updateMany({
+      where: { id: { in: id } },
+      data: { status },
+    });
 
-  return NextResponse.json({ data: updatedComment }, { status: 200 });
+    return NextResponse.json({ data: updatedComments }, { status: 200 });
+  } else {
+    const updatedComment = await prisma.comment.update({
+      where: { id },
+      data: { status },
+    });
+
+    return NextResponse.json({ data: updatedComment }, { status: 200 });
+  }
 }
 
 export async function GET(request: NextRequest) {

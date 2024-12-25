@@ -3,6 +3,7 @@
 import { DataTable } from "@/components/ui/data-table";
 import { Category, Comment, CommentStatus, Post } from "@prisma/client";
 import { SortingState } from "@tanstack/react-table";
+import { Check, X } from "lucide-react";
 import commentsColumns from "./comments-columns";
 
 export default function CommentsDataTable({
@@ -13,6 +14,7 @@ export default function CommentsDataTable({
   onSortingChange,
   sorting,
   onStatusChange,
+  onBatchStatusChange,
 }: {
   comments: PaginatedResponse<
     Comment & { post: Post & { category: Category } }
@@ -23,6 +25,7 @@ export default function CommentsDataTable({
   onSortingChange: (sorting: SortingState) => void;
   sorting: SortingState;
   onStatusChange: (id: string, status: CommentStatus) => Promise<void>;
+  onBatchStatusChange: (ids: string[], status: CommentStatus) => Promise<void>;
 }) {
   return (
     <DataTable
@@ -36,6 +39,28 @@ export default function CommentsDataTable({
       manualSorting
       onSortingChange={onSortingChange}
       sorting={sorting}
+      operations={[
+        {
+          label: "Seçilenleri Onayla",
+          icon: Check,
+          onClick: async (rows) => {
+            await onBatchStatusChange(
+              rows.map((row) => row.original.id),
+              "APPROVED"
+            );
+          },
+        },
+        {
+          label: "Seçilenleri Reddet",
+          icon: X,
+          onClick: async (rows) => {
+            await onBatchStatusChange(
+              rows.map((row) => row.original.id),
+              "REJECTED"
+            );
+          },
+        },
+      ]}
     />
   );
 }
