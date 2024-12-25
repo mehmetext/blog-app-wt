@@ -28,6 +28,7 @@ export function PostItem({ post }: PostItemProps) {
               src={post.coverImage}
               alt={post.title}
               fill
+              priority
               className="object-cover transition-transform group-hover:scale-105"
             />
           </div>
