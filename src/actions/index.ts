@@ -133,6 +133,14 @@ export const login = async (email: string, password: string) => {
   return { status: true, code: "login-success" };
 };
 
+export const logout = async () => {
+  const cookieList = await cookies();
+  cookieList.delete("access-token");
+  cookieList.delete("refresh-token");
+
+  return { status: true, code: "logout-success" };
+};
+
 export const currentUser = async () => {
   const cookieList = await cookies();
 

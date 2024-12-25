@@ -1,16 +1,16 @@
-import { LogOut } from "lucide-react";
+"use client";
 
-import { Button } from "./ui/button";
-
+import { logout } from "@/actions";
+import { cn } from "@/lib/utils";
 import { User } from "@prisma/client";
+import { LogOut, ShieldAlert } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Button, buttonVariants } from "./ui/button";
 import { Small } from "./ui/typography";
 
-import { cn } from "@/lib/utils";
-import { ShieldAlert } from "lucide-react";
-import Link from "next/link";
-import { buttonVariants } from "./ui/button";
-
 export default function AdminToolbar({ user }: { user: User }) {
+  const router = useRouter();
   return (
     <div className="bg-secondary text-secondary-foreground h-12 flex items-center">
       <div className="container flex items-center gap-2">
@@ -38,11 +38,19 @@ export default function AdminToolbar({ user }: { user: User }) {
           className="ml-auto hidden sm:flex"
           variant="destructive"
           size="sm"
+          onClick={async () => {
+            await logout();
+            router.refresh();
+          }}
         >
           <LogOut />
           Çıkış Yap
         </Button>
         <Button
+          onClick={async () => {
+            await logout();
+            router.refresh();
+          }}
           className="ml-auto flex sm:hidden"
           variant="destructive"
           size="icon"
