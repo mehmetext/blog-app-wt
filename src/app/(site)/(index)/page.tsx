@@ -6,6 +6,8 @@ import postsNuqs from "@/lib/nuqs/posts";
 import { SearchParams } from "nuqs";
 import { FeaturedPost } from "./components/featured-post";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage({
   searchParams,
 }: {
