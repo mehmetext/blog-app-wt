@@ -1,9 +1,21 @@
 "use server";
 
-import { Category, Comment, CommentStatus, Post, User } from "@prisma/client";
+import prisma from "@/lib/prisma";
+import { generateTokens } from "@/lib/utils";
+import { Comment, CommentStatus, Post, Prisma } from "@prisma/client";
+import { compare } from "bcrypt";
+import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
-export const getPosts = async (params: {
+export const getPosts = async ({
+  page = 1,
+  q,
+  category,
+  limit = 10,
+  sortBy,
+  sortDesc,
+  featured,
+}: {
   page?: number;
   q?: string;
   category?: string | null;
@@ -12,144 +24,232 @@ export const getPosts = async (params: {
   sortDesc?: boolean;
   featured?: boolean;
 }) => {
-  const response = await fetch(
-    `${process.env.API_URL}/api/posts?page=${params.page ?? 1}${
-      params.q ? `&q=${params.q}` : ""
-    }${params.category ? `&category=${params.category}` : ""}${
-      params.limit ? `&limit=${params.limit}` : ""
-    }${params.sortBy ? `&sortBy=${params.sortBy}` : ""}${
-      params.sortDesc ? `&sortDesc=${params.sortDesc}` : ""
-    }${params.featured ? `&featured=${params.featured}` : ""}`
-  );
+  const orderBy: Prisma.PostOrderByWithRelationInput = {};
 
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
+  if (sortBy) {
+    switch (sortBy) {
+      case "comments":
+        break;
+      case "author":
+        orderBy.author = {
+          name: sortDesc ? "desc" : "asc",
+        };
+        break;
+      case "category":
+        orderBy.category = {
+          name: sortDesc ? "desc" : "asc",
+        };
+        break;
+      default:
+        orderBy[sortBy as keyof Post] = sortDesc ? "desc" : "asc";
+        break;
+    }
   }
 
-  const data = await response.json();
-  return data.data as PaginatedResponse<
-    Post & { category: Category; author: User; comments: Comment[] }
-  >;
-};
+  const [posts, total] = await prisma.$transaction([
+    prisma.post.findMany({
+      include: {
+        category: true,
+        author: true,
+        comments: {
+          where: {
+            deletedAt: null,
+            status: "APPROVED",
+          },
+        },
+      },
+      orderBy,
+      take: limit,
+      skip: (page - 1) * limit,
+      where: {
+        // Only show posts that are not deleted
+        deletedAt: null,
+        // Only show posts that are in the category
+        ...(category
+          ? {
+              category: {
+                slug: category,
+              },
+            }
+          : {}),
+        // Search for posts that contain the query in the title or content
+        ...(q
+          ? {
+              OR: [
+                {
+                  title: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  content: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  comments: {
+                    some: {
+                      content: { contains: q, mode: "insensitive" },
+                      deletedAt: null,
+                      status: "APPROVED",
+                    },
+                  },
+                },
+              ],
+            }
+          : {}),
+        // Show featured posts filtered by featured
+        ...(featured ? { isFeatured: featured } : {}),
+      },
+    }),
+    prisma.post.count({
+      where: {
+        deletedAt: null,
+        ...(category
+          ? {
+              category: {
+                slug: category,
+              },
+            }
+          : {}),
+        ...(q
+          ? {
+              OR: [
+                { title: { contains: q, mode: "insensitive" } },
+                { content: { contains: q, mode: "insensitive" } },
+                {
+                  comments: {
+                    some: {
+                      content: { contains: q, mode: "insensitive" },
+                      deletedAt: null,
+                      status: "APPROVED",
+                    },
+                  },
+                },
+              ],
+            }
+          : {}),
+        ...(featured ? { isFeatured: featured } : {}),
+      },
+    }),
+  ]);
 
-export const getPost = async (slug: string) => {
-  const response = await fetch(`${process.env.API_URL}/api/posts/${slug}`);
-
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
+  if (sortBy === "comments") {
+    posts.sort((a, b) => b.comments.length - a.comments.length);
+    if (sortDesc) posts.reverse();
   }
 
-  const data = await response.json();
-  return data.data as Post & {
-    category: Category;
-    author: User;
-    comments: Comment[];
+  return {
+    items: posts,
+    limit,
+    pageCount: Math.ceil(total / limit),
   };
 };
 
-export const updatePost = async (slug: string, updateData: Partial<Post>) => {
-  const response = await fetch(`${process.env.API_URL}/api/posts/${slug}`, {
-    method: "PUT",
-    body: JSON.stringify(updateData),
+export const getPost = async (slug: string) => {
+  const post = await prisma.post.findUnique({
+    include: {
+      category: true,
+      author: true,
+      comments: {
+        where: {
+          deletedAt: null,
+          status: "APPROVED",
+        },
+      },
+    },
+    where: {
+      slug: slug,
+      deletedAt: null,
+    },
   });
 
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.data as Post;
+  return post;
 };
 
-export const getFeaturedPosts = async () => {
-  const response = await fetch(
-    `${process.env.API_URL}/api/posts?isFeatured=true`
-  );
-
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
+export const updatePost = async (slug: string, data: Partial<Post>) => {
+  if (data.isFeatured) {
+    await prisma.post.updateMany({
+      where: { isFeatured: true },
+      data: { isFeatured: false },
+    });
   }
 
-  const data = await response.json();
-  return data.data as Post &
-    {
-      category: Category;
-      author: User;
-      comments: Comment[];
-    }[];
+  const post = await prisma.post.update({
+    where: { slug },
+    data: {
+      ...data,
+    },
+  });
+
+  return post;
 };
 
 export const getCategories = async () => {
-  const response = await fetch(`${process.env.API_URL}/api/categories`);
+  const categories = await prisma.category.findMany({
+    include: {
+      _count: { select: { posts: true } },
+    },
+    where: {
+      deletedAt: null,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.data as (Category & { _count: { posts: number } })[];
+  return categories;
 };
 
 export const getCategory = async (slug: string) => {
-  const response = await fetch(`${process.env.API_URL}/api/categories/${slug}`);
+  const category = await prisma.category.findUnique({
+    where: { slug },
+  });
 
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.data as Category;
+  return category;
 };
 
-export const createComment = async (comment: {
+export const createComment = async ({
+  content,
+  authorName,
+  postId,
+}: {
   content: string;
   authorName: string;
   postId: string;
 }) => {
-  const response = await fetch(`${process.env.API_URL}/api/comments`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const newComment = await prisma.comment.create({
+    data: {
+      content,
+      authorName,
+      postId,
     },
-    body: JSON.stringify({
-      content: comment.content,
-      authorName: !comment.authorName ? null : comment.authorName,
-      postId: comment.postId,
-    }),
   });
 
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.data as Comment;
+  return newComment;
 };
 
 export const login = async (email: string, password: string) => {
   const cookieList = await cookies();
+  const user = await prisma.user.findUnique({ where: { email } });
 
-  const response = await fetch(`${process.env.API_URL}/api/auth/login`, {
-    method: "POST",
-    headers: {
-      Cookie: cookieList
-        .getAll()
-        .map((cookie) => `${cookie.name}=${cookie.value}`)
-        .join("; "),
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email, password }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    return { status: false, code: data.error };
+  if (!user) {
+    return { status: false, code: "invalid-credentials" };
   }
+
+  const isPasswordValid = await compare(password, user.hashedPassword);
+
+  if (!isPasswordValid) {
+    return { status: false, code: "invalid-credentials" };
+  }
+
+  const { accessToken, refreshToken } = await generateTokens(user.id);
 
   cookieList.set({
     name: "access-token",
-    value: data.data.accessToken,
+    value: accessToken,
     httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 5, // 5 minutes
@@ -157,13 +257,56 @@ export const login = async (email: string, password: string) => {
 
   cookieList.set({
     name: "refresh-token",
-    value: data.data.refreshToken,
+    value: refreshToken,
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60, // 1 hour
   });
 
   return { status: true, code: "login-success" };
+};
+
+export const refreshTokens = async () => {
+  const cookieList = await cookies();
+  const refreshToken = cookieList.get("refresh-token")?.value;
+
+  if (!refreshToken) {
+    return false;
+  }
+
+  const { payload } = await jwtVerify(
+    refreshToken,
+    new TextEncoder().encode(process.env.JWT_REFRESH_SECRET)
+  );
+
+  const user = await prisma?.user.findUnique({
+    where: { id: payload.sub! },
+  });
+
+  if (!user) {
+    return false;
+  }
+
+  const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+    await generateTokens(user.id);
+
+  cookieList.set({
+    name: "access-token",
+    value: newAccessToken,
+    httpOnly: false,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 5, // 5 minutes
+  });
+
+  cookieList.set({
+    name: "refresh-token",
+    value: newRefreshToken,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 60, // 1 hour
+  });
+
+  return true;
 };
 
 export const logout = async () => {
@@ -183,70 +326,154 @@ export const currentUser = async () => {
     return null;
   }
 
-  const response = await fetch(`${process.env.API_URL}/api/auth/current-user`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+  const { payload } = await jwtVerify(
+    accessToken,
+    new TextEncoder().encode(process.env.JWT_SECRET)
+  );
+
+  const user = await prisma.user.findUnique({
+    where: { id: payload.sub },
   });
 
-  if (!response.ok) {
-    return null;
-  }
-
-  const data = await response.json();
-  return data.data as User;
+  return user;
 };
 
 export const getUsers = async () => {
-  const response = await fetch(`${process.env.API_URL}/api/users`);
+  const users = await prisma.user.findMany({
+    include: {
+      _count: {
+        select: {
+          Post: {
+            where: {
+              deletedAt: null,
+            },
+          },
+        },
+      },
+    },
+    where: {
+      deletedAt: null,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-  return data.data as (User & { _count: { Post: number } })[];
+  return users;
 };
 
-export const getComments = async (params: {
+export const getComments = async ({
+  page = 1,
+  q,
+  limit = 10,
+  sortBy,
+  sortDesc,
+}: {
   page?: number;
   q?: string;
   limit?: number;
   sortBy?: string;
   sortDesc?: boolean;
 }) => {
-  const response = await fetch(
-    `${process.env.API_URL}/api/comments?page=${params.page ?? 1}${
-      params.q ? `&q=${params.q}` : ""
-    }${params.limit ? `&limit=${params.limit}` : ""}${
-      params.sortBy ? `&sortBy=${params.sortBy}` : ""
-    }${params.sortDesc ? `&sortDesc=${params.sortDesc}` : ""}`
-  );
+  const orderBy: Prisma.CommentOrderByWithRelationInput = {};
 
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
+  if (sortBy) {
+    switch (sortBy) {
+      case "postTitle":
+        orderBy.post = {
+          title: sortDesc ? "desc" : "asc",
+        };
+        break;
+      default:
+        orderBy[sortBy as keyof Comment] = sortDesc ? "desc" : "asc";
+        break;
+    }
   }
 
-  const data = await response.json();
-  return data.data as PaginatedResponse<
-    Comment & { post: Post & { category: Category } }
-  >;
+  const [comments, total] = await prisma.$transaction([
+    prisma.comment.findMany({
+      include: {
+        post: {
+          include: {
+            category: true,
+          },
+        },
+      },
+      orderBy,
+      take: limit,
+      skip: (page - 1) * limit,
+      where: {
+        // Only show posts that are not deleted
+        deletedAt: null,
+        ...(q
+          ? {
+              OR: [
+                {
+                  content: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  authorName: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            }
+          : {}),
+      },
+    }),
+    prisma.comment.count({
+      where: {
+        deletedAt: null,
+        ...(q
+          ? {
+              OR: [
+                {
+                  content: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  authorName: {
+                    contains: q,
+                    mode: "insensitive",
+                  },
+                },
+              ],
+            }
+          : {}),
+      },
+    }),
+  ]);
+
+  return {
+    items: comments,
+    limit,
+    pageCount: Math.ceil(total / limit),
+  };
 };
 
 export const updateCommentStatus = async (
   id: string | string[],
   status: CommentStatus
 ) => {
-  const response = await fetch(`${process.env.API_URL}/api/comments`, {
-    method: "PUT",
-    body: JSON.stringify({ id, status }),
-  });
+  if (Array.isArray(id)) {
+    const updatedComments = await prisma.comment.updateMany({
+      where: { id: { in: id } },
+      data: { status },
+    });
 
-  if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
+    return updatedComments.count;
+  } else {
+    await prisma.comment.update({
+      where: { id },
+      data: { status },
+    });
+
+    return 1;
   }
-
-  const data = await response.json();
-
-  return Array.isArray(id) ? (data.data as Comment[]) : (data.data as Comment);
 };

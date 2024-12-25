@@ -25,6 +25,10 @@ export async function generateMetadata({
 
   const post = await getPost(postSlug);
 
+  if (!post) {
+    return notFound();
+  }
+
   return {
     title: `${post.title} - Blog App`,
   };

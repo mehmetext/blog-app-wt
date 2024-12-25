@@ -1,6 +1,7 @@
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { refreshTokens } from "./actions";
 
 export default async function middleware(req: NextRequest) {
   const cookieList = await cookies();
@@ -45,37 +46,11 @@ export default async function middleware(req: NextRequest) {
     }
 
     try {
-      const response = await fetch(`${process.env.API_URL}/api/auth/refresh`, {
-        method: "GET",
-        headers: {
-          Cookie: `refresh-token=${refreshToken.value}`,
-        },
-      });
+      const refreshStatus = await refreshTokens();
 
-      if (!response.ok) {
+      if (!refreshStatus) {
         throw new Error("Failed to refresh token");
       }
-
-      const {
-        data: { accessToken: newAccessToken, refreshToken: newRefreshToken },
-      } = await response.json();
-
-      // Yeni tokenları set et
-      cookieList.set({
-        name: "access-token",
-        value: newAccessToken,
-        httpOnly: false,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 5, // 5 dakika
-      });
-
-      cookieList.set({
-        name: "refresh-token",
-        value: newRefreshToken,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60, // 1 saat
-      });
 
       return NextResponse.next();
     } catch {
