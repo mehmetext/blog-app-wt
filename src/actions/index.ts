@@ -87,7 +87,7 @@ export const getCategories = async () => {
   }
 
   const data = await response.json();
-  return data.data as Category[];
+  return data.data as (Category & { _count: { posts: number } })[];
 };
 
 export const getCategory = async (slug: string) => {

@@ -29,6 +29,13 @@ export default [
     ),
   },
   {
+    id: "posts",
+    header: "Gönderi Sayısı",
+    cell: ({ row }) => {
+      return row.original._count.posts;
+    },
+  },
+  {
     accessorKey: "createdAt",
     header: "Oluşturulma Tarihi",
     cell: ({ row }) => {
@@ -69,4 +76,4 @@ export default [
       );
     },
   },
-] as ColumnDef<Category>[];
+] as ColumnDef<Category & { _count: { posts: number } }>[];
