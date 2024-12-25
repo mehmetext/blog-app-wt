@@ -205,7 +205,7 @@ export const getUsers = async () => {
   }
 
   const data = await response.json();
-  return data.data as User[];
+  return data.data as User & { _count: { Post: number } }[];
 };
 
 export const getComments = async (params: {
