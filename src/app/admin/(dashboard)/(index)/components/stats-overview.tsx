@@ -13,25 +13,25 @@ export default async function StatsOverview() {
 
   const stats = [
     {
-      title: "Total Posts",
+      title: "Toplam Gönderi",
       value: posts.items.length,
       icon: FileText,
       href: "/admin/posts",
     },
     {
-      title: "Categories",
+      title: "Kategoriler",
       value: categories.length,
       icon: FolderTree,
       href: "/admin/categories",
     },
     {
-      title: "Users",
+      title: "Kullanıcılar",
       value: users.length,
       icon: Users,
       href: "/admin/users",
     },
     {
-      title: "Comments",
+      title: "Yorumlar",
       value: posts.items.reduce((acc, post) => acc + post.comments.length, 0),
       icon: MessageSquare,
       href: "/admin/comments",
@@ -49,7 +49,7 @@ export default async function StatsOverview() {
             <H3>{stat.value}</H3>
             <Muted>
               <Link href={stat.href} className="text-xs hover:underline">
-                View all
+                Tümünü Görüntüle
               </Link>
             </Muted>
           </CardContent>

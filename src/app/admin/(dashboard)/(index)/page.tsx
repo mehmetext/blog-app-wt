@@ -14,7 +14,7 @@ export default async function AdminDashboardPage() {
 
         <Card className="md:col-span-4">
           <CardHeader>
-            <CardTitle>Recent Posts</CardTitle>
+            <CardTitle>Son Gönderiler</CardTitle>
           </CardHeader>
           <CardContent>
             <RecentPosts posts={posts.items} />

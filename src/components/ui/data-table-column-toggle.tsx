@@ -60,11 +60,11 @@ export function DataTableViewOptions<TData>({
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm">
             <Settings2 />
-            View
+            Görünüm
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[150px]">
-          <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+          <DropdownMenuLabel>Sütunları Gizle/Göster</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {table
             .getAllColumns()
