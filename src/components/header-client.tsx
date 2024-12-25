@@ -35,7 +35,7 @@ export default function HeaderClient({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/30 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="border-b border-border/30 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
