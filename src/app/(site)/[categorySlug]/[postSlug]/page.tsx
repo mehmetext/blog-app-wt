@@ -43,71 +43,69 @@ export default async function PostPage({
 
   return (
     <PageContainer>
-      <article className="mx-auto w-full max-w-3xl space-y-8">
-        <BreadcrumbNav
-          items={[
-            {
-              label: post.category.name,
-              href: `/${post.category.slug}`,
-            },
-            { label: post.title, href: `/${post.slug}` },
-          ]}
-        />
+      <BreadcrumbNav
+        items={[
+          {
+            label: post.category.name,
+            href: `/${post.category.slug}`,
+          },
+          { label: post.title, href: `/${post.slug}` },
+        ]}
+      />
 
-        <div className="space-y-4">
-          <Link
-            href={`/${post.category.slug}`}
-            className={cn(badgeVariants({ variant: "outline" }))}
-          >
-            {post.category.name}
-          </Link>
-          <H1>{post.title}</H1>
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              <span>{post.author.name}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <span>
-                {formatDistanceToNow(new Date(post.createdAt), {
-                  addSuffix: true,
-                  locale: tr,
-                })}
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <MessageCircle className="h-4 w-4" />
-              <span>{post.comments.length} yorum</span>
-            </div>
+      <div className="space-y-4">
+        <Link
+          href={`/${post.category.slug}`}
+          className={cn(badgeVariants({ variant: "outline" }))}
+        >
+          {post.category.name}
+        </Link>
+        <H1>{post.title}</H1>
+        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <User className="h-4 w-4" />
+            <span>{post.author.name}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            <span>
+              {formatDistanceToNow(new Date(post.createdAt), {
+                addSuffix: true,
+                locale: tr,
+              })}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <MessageCircle className="h-4 w-4" />
+            <span>{post.comments.length} yorum</span>
           </div>
         </div>
+      </div>
 
-        <div className="flex flex-col gap-8 relative">
-          <div className="aspect-video relative overflow-hidden rounded-xl">
-            <Image
-              src={post.coverImage}
-              alt={post.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover"
-              priority
-            />
-          </div>
-
-          <Card>
-            <CardContent className="prose prose-stone dark:prose-invert max-w-none p-6">
-              <Markdown>{post.content}</Markdown>
-            </CardContent>
-          </Card>
-
-          <div className="lg:absolute right-[calc(100%+1rem)] top-0 bottom-0">
-            <ShareButtons content={post.title} />
-          </div>
+      <div className="flex flex-col gap-8 relative">
+        <div className="aspect-video relative overflow-hidden rounded-xl">
+          <Image
+            src={post.coverImage}
+            alt={post.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover"
+            priority
+          />
         </div>
 
-        <Comments post={post} />
-      </article>
+        <Card>
+          <CardContent className="prose prose-stone dark:prose-invert max-w-none p-6">
+            <Markdown>{post.content}</Markdown>
+          </CardContent>
+        </Card>
+
+        <div className="lg:absolute right-[calc(100%+1rem)] top-0 bottom-0">
+          <ShareButtons content={post.title} />
+        </div>
+      </div>
+
+      <Comments post={post} />
     </PageContainer>
   );
 }
