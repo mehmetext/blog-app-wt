@@ -1,5 +1,6 @@
 "use client";
 
+import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,10 +20,12 @@ import {
   SidebarMenuItem,
   Sidebar as SidebarUI,
 } from "@/components/ui/sidebar";
+import { cn } from "@/lib/utils";
 import {
   ChevronUp,
   FileText,
   FolderTree,
+  Home,
   MessageSquare,
   Plus,
   Settings,
@@ -94,6 +97,18 @@ export default function Sidebar() {
         </Link>
       </SidebarHeader>
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <Link
+              href="/"
+              target="_blank"
+              className={cn(buttonVariants({ size: "sm" }), "w-full")}
+            >
+              <Home />
+              <span>Siteyi Görüntüle</span>
+            </Link>
+          </SidebarGroupContent>
+        </SidebarGroup>
         {menuGroups.map((group, i) => (
           <SidebarGroup key={i}>
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
