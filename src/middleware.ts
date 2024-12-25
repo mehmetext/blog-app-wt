@@ -60,8 +60,10 @@ export default async function middleware(req: NextRequest) {
         data: { accessToken: newAccessToken, refreshToken: newRefreshToken },
       } = await response.json();
 
+      const nextResponse = NextResponse.next();
+
       // Yeni tokenları set et
-      cookieList.set({
+      nextResponse.cookies.set({
         name: "access-token",
         value: newAccessToken,
         httpOnly: false,
@@ -69,7 +71,7 @@ export default async function middleware(req: NextRequest) {
         maxAge: 60 * 5, // 5 dakika
       });
 
-      cookieList.set({
+      nextResponse.cookies.set({
         name: "refresh-token",
         value: newRefreshToken,
         httpOnly: true,
@@ -77,7 +79,7 @@ export default async function middleware(req: NextRequest) {
         maxAge: 60 * 60, // 1 saat
       });
 
-      return NextResponse.next();
+      return nextResponse;
     } catch {
       // Refresh token da geçersizse ve admin rotasıysa login'e yönlendir
       if (isAdminRoute) {
