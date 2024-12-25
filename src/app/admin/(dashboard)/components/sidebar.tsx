@@ -1,5 +1,6 @@
 "use client";
 
+import { logout } from "@/actions";
 import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -21,6 +22,7 @@ import {
   Sidebar as SidebarUI,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { User } from "@prisma/client";
 import {
   ChevronUp,
   FileText,
@@ -41,7 +43,7 @@ interface SidebarMenuGroup {
   items: { icon: React.ComponentType; label: string; href: string }[];
 }
 
-export default function Sidebar() {
+export default function Sidebar({ user }: { user: User }) {
   const pathname = usePathname();
 
   const menuGroups: SidebarMenuGroup[] = [
@@ -139,7 +141,7 @@ export default function Sidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> Admin
+                  <User2 /> {user.name}
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -147,8 +149,8 @@ export default function Sidebar() {
                 side="top"
                 className="w-[--radix-popper-anchor-width]"
               >
-                <DropdownMenuItem>
-                  <span>Sign out</span>
+                <DropdownMenuItem onClick={logout}>
+                  <span>Çıkış Yap</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

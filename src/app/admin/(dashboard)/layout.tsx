@@ -16,7 +16,7 @@ export default async function AdminLayout({
 
   return (
     <SidebarProvider className="mb-4">
-      <Sidebar />
+      <Sidebar user={user} />
       {children}
     </SidebarProvider>
   );

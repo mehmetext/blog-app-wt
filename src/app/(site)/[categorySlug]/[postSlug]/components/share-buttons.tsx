@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Copy, Facebook, Linkedin, Mail, Twitter } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function ShareButtons({ content }: { content: string }) {
   const [shareUrl, setShareUrl] = useState("");
@@ -69,6 +70,7 @@ export default function ShareButtons({ content }: { content: string }) {
         variant="ghost"
         onClick={() => {
           navigator.clipboard.writeText(shareUrl);
+          toast.success("Bağlantı kopyalandı");
         }}
         title="Bağlantıyı Kopyala"
       >

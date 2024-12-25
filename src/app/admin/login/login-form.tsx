@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 export function LoginForm({
   className,
   ...props
@@ -29,7 +30,11 @@ export function LoginForm({
     if (status) {
       router.push("/admin");
     } else {
-      alert(code);
+      toast.error(
+        code === "invalid-credentials"
+          ? "Böyle bir kullanıcı bulunamadı"
+          : `Bir hata oluştu: ${code}`
+      );
     }
   };
 

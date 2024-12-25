@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
@@ -42,6 +43,7 @@ export default function RootLayout({
         >
           <NuqsAdapter>{children}</NuqsAdapter>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );
