@@ -14,4 +14,6 @@ RUN npx prisma generate
 
 RUN npm run build
 
-CMD npm start
+RUN chmod +x docker-entrypoint.sh
+
+CMD ["./docker-entrypoint.sh"]
