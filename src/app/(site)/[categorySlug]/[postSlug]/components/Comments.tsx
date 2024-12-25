@@ -82,7 +82,9 @@ export default function Comments({
               className="border rounded-lg p-4 space-y-2 bg-muted/40"
             >
               <div className="flex items-center justify-between text-sm text-muted-foreground">
-                <span className="font-medium">{comment.authorName}</span>
+                <span className="font-medium">
+                  {comment.authorName ?? "Anonim"}
+                </span>
                 <span>
                   {formatDistanceToNow(comment.createdAt, {
                     addSuffix: true,
