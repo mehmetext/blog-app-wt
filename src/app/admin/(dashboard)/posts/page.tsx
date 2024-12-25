@@ -1,4 +1,4 @@
-import { getPosts } from "@/actions";
+import { getPosts, updatePost } from "@/actions";
 import { Button } from "@/components/ui/button";
 import { H3 } from "@/components/ui/typography";
 import postsNuqs from "@/lib/nuqs/posts";
@@ -59,6 +59,20 @@ export default async function AdminPostsPage({
             `/admin/posts${postsNuqs.serializer({
               sortBy: sorting[0]?.id,
               sortDesc: sorting[0]?.desc,
+              page,
+              limit,
+              q,
+              category,
+            })}`
+          );
+        }}
+        onFeaturedChange={async (slug, isFeatured) => {
+          "use server";
+          await updatePost(slug, { isFeatured });
+          redirect(
+            `/admin/posts${postsNuqs.serializer({
+              sortBy,
+              sortDesc,
               page,
               limit,
               q,

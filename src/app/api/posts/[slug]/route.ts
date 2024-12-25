@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { Post } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
@@ -27,4 +28,38 @@ export async function GET(
   return NextResponse.json({
     data: post,
   });
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
+) {
+  const { slug } = await params;
+  const data = (await request.json()) as Partial<Post>;
+
+  if (data.isFeatured) {
+    const [, post] = await prisma.$transaction([
+      prisma.post.updateMany({
+        where: { isFeatured: true },
+        data: { isFeatured: false },
+      }),
+      prisma.post.update({
+        where: { slug },
+        data: {
+          ...data,
+        },
+      }),
+    ]);
+
+    return NextResponse.json({ data: post });
+  } else {
+    const post = await prisma.post.update({
+      where: { slug },
+      data: {
+        ...data,
+      },
+    });
+
+    return NextResponse.json({ data: post });
+  }
 }

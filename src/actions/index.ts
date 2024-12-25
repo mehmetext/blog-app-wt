@@ -10,6 +10,7 @@ export const getPosts = async (params: {
   limit?: number;
   sortBy?: string;
   sortDesc?: boolean;
+  featured?: boolean;
 }) => {
   const response = await fetch(
     `${process.env.API_URL}/api/posts?page=${params.page ?? 1}${
@@ -18,7 +19,7 @@ export const getPosts = async (params: {
       params.limit ? `&limit=${params.limit}` : ""
     }${params.sortBy ? `&sortBy=${params.sortBy}` : ""}${
       params.sortDesc ? `&sortDesc=${params.sortDesc}` : ""
-    }`
+    }${params.featured ? `&featured=${params.featured}` : ""}`
   );
 
   if (!response.ok) {
@@ -44,6 +45,38 @@ export const getPost = async (slug: string) => {
     author: User;
     comments: Comment[];
   };
+};
+
+export const updatePost = async (slug: string, updateData: Partial<Post>) => {
+  const response = await fetch(`${process.env.API_URL}/api/posts/${slug}`, {
+    method: "PUT",
+    body: JSON.stringify(updateData),
+  });
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.data as Post;
+};
+
+export const getFeaturedPosts = async () => {
+  const response = await fetch(
+    `${process.env.API_URL}/api/posts?isFeatured=true`
+  );
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.data as Post &
+    {
+      category: Category;
+      author: User;
+      comments: Comment[];
+    }[];
 };
 
 export const getCategories = async () => {

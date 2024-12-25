@@ -45,11 +45,12 @@ model Category {
 }
 
 model Post {
-  id         String @id @default(cuid())
+  id         String  @id @default(cuid())
   title      String
   content    String
-  slug       String @unique
+  slug       String  @unique
   coverImage String
+  isFeatured Boolean @default(false)
 
   authorId   String
   author     User      @relation(fields: [authorId], references: [id])

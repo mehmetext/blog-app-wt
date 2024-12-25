@@ -12,6 +12,9 @@ export async function GET(request: NextRequest) {
   const category = searchParams.get("category");
   const sortBy = searchParams.get("sortBy");
   const sortDesc = searchParams.get("sortDesc");
+  const featured =
+    searchParams.get("featured") != undefined &&
+    searchParams.get("featured") === "true";
 
   const orderBy: Prisma.PostOrderByWithRelationInput = {};
 
@@ -89,6 +92,8 @@ export async function GET(request: NextRequest) {
               ],
             }
           : {}),
+        // Show featured posts filtered by featured
+        ...(featured ? { isFeatured: featured } : {}),
       },
     }),
     prisma.post.count({
@@ -118,6 +123,7 @@ export async function GET(request: NextRequest) {
               ],
             }
           : {}),
+        ...(featured ? { isFeatured: featured } : {}),
       },
     }),
   ]);

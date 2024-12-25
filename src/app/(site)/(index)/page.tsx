@@ -1,4 +1,4 @@
-import { getPost, getPosts } from "@/actions";
+import { getPosts } from "@/actions";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import PageContainer from "@/components/page-container";
 import Posts from "@/components/posts";
@@ -12,13 +12,15 @@ export default async function HomePage({
   searchParams: Promise<SearchParams>;
 }) {
   const { page, q } = await postsNuqs.cache.parse(searchParams);
-  const featuredPost = await getPost("web-30-ve-blockchain-teknolojisi");
+  const featuredPosts = await getPosts({ featured: true });
   const posts = await getPosts({ page, q });
 
   return (
     <PageContainer>
       <BreadcrumbNav />
-      {featuredPost && <FeaturedPost post={featuredPost} />}
+      {featuredPosts.items.length > 0 && (
+        <FeaturedPost post={featuredPosts.items[0]} />
+      )}
       <Posts
         page={page}
         q={q}

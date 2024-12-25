@@ -12,6 +12,7 @@ export default function PostsDataTable({
   onPaginationChange,
   onSortingChange,
   sorting,
+  onFeaturedChange,
 }: {
   posts: PaginatedResponse<
     Post & {
@@ -25,10 +26,11 @@ export default function PostsDataTable({
   onPaginationChange: (pageIndex: number, pageSize: number) => void;
   onSortingChange: (sorting: SortingState) => void;
   sorting: SortingState;
+  onFeaturedChange: (slug: string, isFeatured: boolean) => Promise<void>;
 }) {
   return (
     <DataTable
-      columns={postsColumns}
+      columns={postsColumns({ onFeaturedChange })}
       data={posts.items}
       manualPagination
       pageCount={posts.pageCount}
