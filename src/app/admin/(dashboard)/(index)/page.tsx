@@ -8,7 +8,7 @@ export default async function AdminDashboardPage() {
   const posts = await getPosts({ limit: 5 });
 
   return (
-    <AdminContainer breadcrumb={[{ label: "Admin Panel", href: "/admin" }]}>
+    <AdminContainer breadcrumb={[{ label: "Admin Paneli", href: "/admin" }]}>
       <div className="space-y-6">
         <StatsOverview />
 
