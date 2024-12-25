@@ -13,7 +13,7 @@ export default function ShareButtons({ content }: { content: string }) {
   }, []);
 
   return (
-    <div className="sticky top-1/4 flex flex-row lg:flex-col gap-4">
+    <>
       <Button size="icon" variant="ghost" asChild>
         <Link
           href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
@@ -75,6 +75,6 @@ export default function ShareButtons({ content }: { content: string }) {
         <Copy />
         <span className="sr-only">Bağlantıyı Kopyala</span>
       </Button>
-    </div>
+    </>
   );
 }

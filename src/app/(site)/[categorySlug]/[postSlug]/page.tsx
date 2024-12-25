@@ -1,13 +1,14 @@
-import { getPost } from "@/actions";
+import { currentUser, getPost } from "@/actions";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import PageContainer from "@/components/page-container";
 import { badgeVariants } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { H1 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { tr } from "date-fns/locale";
-import { Calendar, MessageCircle, User } from "lucide-react";
+import { Calendar, Edit, MessageCircle, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -36,6 +37,7 @@ export default async function PostPage({
 }) {
   const { postSlug } = await params;
   const post = await getPost(postSlug);
+  const user = await currentUser();
 
   if (!post) {
     return notFound();
@@ -101,7 +103,19 @@ export default async function PostPage({
         </Card>
 
         <div className="lg:absolute right-[calc(100%+1rem)] top-0 bottom-0">
-          <ShareButtons content={post.title} />
+          <div className="sticky top-1/4 flex flex-row lg:flex-col gap-4">
+            {user?.role === "ADMIN" && (
+              <Link
+                href={`/admin/posts/${post.id}/edit`}
+                className={cn(
+                  buttonVariants({ variant: "secondary", size: "icon" })
+                )}
+              >
+                <Edit className="h-4 w-4" />
+              </Link>
+            )}
+            <ShareButtons content={post.title} />
+          </div>
         </div>
       </div>
 
