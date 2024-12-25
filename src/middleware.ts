@@ -1,40 +1,50 @@
 import { jwtVerify } from "jose";
-import { NextConfig } from "next";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export default async function middleware(req: NextRequest) {
-  // check if path is admin
+  const cookieList = await cookies();
+  const accessToken = cookieList.get("access-token");
+
+  // Her zaman next() ile devam edecek olan rotalar
   if (
-    req.nextUrl.pathname.startsWith("/admin") &&
-    !req.nextUrl.pathname.startsWith("/admin/login")
+    req.nextUrl.pathname.startsWith("/api") ||
+    req.nextUrl.pathname.startsWith("/_next") ||
+    req.nextUrl.pathname.startsWith("/admin/login") ||
+    req.nextUrl.pathname === "/favicon.ico"
   ) {
-    const cookieList = await cookies();
-    const accessToken = cookieList.get("access-token");
+    return NextResponse.next();
+  }
 
-    try {
-      if (!accessToken) {
-        // if access token is not found
-        throw new Error("Access token not found");
-      }
+  // Admin rotaları için özel kontrol
+  const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
 
-      // verify access token
-      await jwtVerify(
-        accessToken.value,
-        new TextEncoder().encode(process.env.JWT_SECRET)
-      );
+  try {
+    if (!accessToken) {
+      throw new Error("Access token not found");
+    }
 
-      return NextResponse.next();
-    } catch {
-      // if access token is invalid
-      // try to refresh access token
-      const refreshToken = cookieList.get("refresh-token");
+    // Access token'ı doğrula
+    await jwtVerify(
+      accessToken.value,
+      new TextEncoder().encode(process.env.JWT_SECRET)
+    );
 
-      if (!refreshToken) {
-        // if refresh token is not found
+    return NextResponse.next();
+  } catch {
+    // Token geçersiz veya expire olmuş, refresh token ile yenilemeyi dene
+    const refreshToken = cookieList.get("refresh-token");
+
+    if (!refreshToken) {
+      // Eğer admin rotasıysa ve refresh token yoksa login'e yönlendir
+      if (isAdminRoute) {
         return NextResponse.redirect(new URL("/admin/login", req.url));
       }
+      // Admin rotası değilse devam et
+      return NextResponse.next();
+    }
 
+    try {
       const response = await fetch(`${process.env.API_URL}/api/auth/refresh`, {
         method: "GET",
         headers: {
@@ -43,20 +53,20 @@ export default async function middleware(req: NextRequest) {
       });
 
       if (!response.ok) {
-        // if refresh token is invalid
-        return NextResponse.redirect(new URL("/admin/login", req.url));
+        throw new Error("Failed to refresh token");
       }
 
       const {
         data: { accessToken: newAccessToken, refreshToken: newRefreshToken },
       } = await response.json();
 
+      // Yeni tokenları set et
       cookieList.set({
         name: "access-token",
         value: newAccessToken,
         httpOnly: false,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 5, // 5 minutes
+        maxAge: 60 * 5, // 5 dakika
       });
 
       cookieList.set({
@@ -64,16 +74,21 @@ export default async function middleware(req: NextRequest) {
         value: newRefreshToken,
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60, // 1 hour
+        maxAge: 60 * 60, // 1 saat
       });
 
       return NextResponse.next();
+    } catch {
+      // Refresh token da geçersizse ve admin rotasıysa login'e yönlendir
+      if (isAdminRoute) {
+        return NextResponse.redirect(new URL("/admin/login", req.url));
+      }
+      // Admin rotası değilse devam et
+      return NextResponse.next();
     }
   }
-
-  return NextResponse.next();
 }
 
-export const config: NextConfig = {
+export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
