@@ -18,9 +18,6 @@ export async function GET(request: NextRequest) {
   if (sortBy) {
     switch (sortBy) {
       case "comments":
-        orderBy.comments = {
-          _count: sortDesc ? "desc" : "asc",
-        };
         break;
       case "author":
         orderBy.author = {
@@ -124,6 +121,11 @@ export async function GET(request: NextRequest) {
       },
     }),
   ]);
+
+  if (sortBy === "comments") {
+    posts.sort((a, b) => b.comments.length - a.comments.length);
+    if (sortDesc) posts.reverse();
+  }
 
   return NextResponse.json({
     data: {
