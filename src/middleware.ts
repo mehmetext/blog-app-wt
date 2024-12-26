@@ -81,6 +81,7 @@ export default async function middleware(req: NextRequest) {
 
       return nextResponse;
     } catch {
+      cookieList.delete("refresh-token");
       // Refresh token da geçersizse ve admin rotasıysa login'e yönlendir
       if (isAdminRoute) {
         return NextResponse.redirect(new URL("/admin/login", req.url));
