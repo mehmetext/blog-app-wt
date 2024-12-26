@@ -1,11 +1,8 @@
-import { getCategories } from "@/actions";
-import { Button } from "@/components/ui/button";
-import { DataTable } from "@/components/ui/data-table";
+import { createCategory, getCategories, updateCategory } from "@/actions";
 import { H3 } from "@/components/ui/typography";
-import { Plus } from "lucide-react";
-import Link from "next/link";
 import AdminContainer from "../components/admin-container";
-import categoriesColumns from "./categories-columns";
+import CategoryDialog from "./components/category-dialog";
+import CategoriesDataTable from "./data-table";
 
 export default async function AdminCategoriesPage() {
   const categories = await getCategories();
@@ -19,14 +16,20 @@ export default async function AdminCategoriesPage() {
     >
       <div className="flex justify-between items-center">
         <H3>Kategoriler</H3>
-        <Button asChild>
-          <Link href="/admin/categories/new">
-            <Plus className="w-4 h-4 mr-2" />
-            Yeni Kategori
-          </Link>
-        </Button>
+        <CategoryDialog
+          onSubmit={async (data) => {
+            "use server";
+            await createCategory(data);
+          }}
+        />
       </div>
-      <DataTable columns={categoriesColumns} data={categories} />
+      <CategoriesDataTable
+        categories={categories}
+        onUpdate={async (id, data) => {
+          "use server";
+          await updateCategory(id, data);
+        }}
+      />
     </AdminContainer>
   );
 }

@@ -525,3 +525,26 @@ export const createPost = async ({
 
   return post;
 };
+
+export async function createCategory(data: { name: string }) {
+  const slug = slugify(data.name, { lower: true, strict: true });
+
+  return prisma.category.create({
+    data: {
+      name: data.name,
+      slug,
+    },
+  });
+}
+
+export async function updateCategory(id: string, data: { name: string }) {
+  const slug = slugify(data.name, { lower: true, strict: true });
+
+  return prisma.category.update({
+    where: { id },
+    data: {
+      name: data.name,
+      slug,
+    },
+  });
+}
