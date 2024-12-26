@@ -30,7 +30,6 @@ import {
   Home,
   MessageSquare,
   Plus,
-  Settings,
   User2,
   Users,
 } from "lucide-react";
@@ -83,12 +82,6 @@ export default function Sidebar({ user }: { user: User }) {
       label: "Yorumlar",
       items: [
         { icon: MessageSquare, label: "Tüm Yorumlar", href: "/admin/comments" },
-      ],
-    },
-    {
-      label: "Ayarlar",
-      items: [
-        { icon: Settings, label: "Site Ayarları", href: "/admin/settings" },
       ],
     },
   ];
