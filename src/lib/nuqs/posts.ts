@@ -13,7 +13,7 @@ const searchParams = {
   category: parseAsString,
   limit: parseAsNumberLiteral([10, 20, 30, 40, 50]).withDefault(10),
   sortBy: parseAsString.withDefault("createdAt"),
-  sortDesc: parseAsBoolean.withDefault(false),
+  sortDesc: parseAsBoolean.withDefault(true),
 };
 
 const cache = createSearchParamsCache(searchParams);
