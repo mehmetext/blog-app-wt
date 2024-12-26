@@ -73,6 +73,60 @@ export function DataTableViewOptions<TData>({
                 typeof column.accessorFn !== "undefined" && column.getCanHide()
             )
             .map((column) => {
+              // Get the header group that contains this column
+              const headerGroup = table.getHeaderGroups()[0];
+              const header = headerGroup.headers.find(
+                (h) => h.column.id === column.id
+              );
+
+              // Get the rendered header content
+              let columnLabel = column.id;
+              if (header) {
+                const rendered = header.column.columnDef.header;
+                if (typeof rendered === "string") {
+                  columnLabel = rendered;
+                } else if (typeof rendered === "function") {
+                  try {
+                    const element = rendered({
+                      column: header.column,
+                      header,
+                      table,
+                    });
+                    if (
+                      element &&
+                      typeof element === "object" &&
+                      "props" in element
+                    ) {
+                      columnLabel = element.props.title || column.id;
+                    }
+                  } catch {
+                    // If rendering fails, fall back to column ID
+                    columnLabel = column.id;
+                  }
+                }
+              }
+
+              // Fallback translations for common column IDs
+              if (columnLabel === column.id) {
+                const translations: Record<string, string> = {
+                  content: "İçerik",
+                  authorName: "Yazar Adı",
+                  postTitle: "Gönderi Başlığı",
+                  createdAt: "Oluşturulma Tarihi",
+                  updatedAt: "Güncellenme Tarihi",
+                  status: "Durum",
+                  actions: "İşlemler",
+                  title: "Başlık",
+                  category: "Kategori",
+                  author: "Yazar",
+                  comments: "Yorumlar",
+                  coverImage: "Resim",
+                  deletedAt: "Silinme Tarihi",
+                  isFeatured: "Öne Çıkan",
+                };
+                columnLabel = translations[column.id] || columnLabel;
+              }
+
               return (
                 <DropdownMenuCheckboxItem
                   key={column.id}
@@ -80,7 +134,7 @@ export function DataTableViewOptions<TData>({
                   checked={column.getIsVisible()}
                   onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
-                  {column.id}
+                  {columnLabel}
                 </DropdownMenuCheckboxItem>
               );
             })}
