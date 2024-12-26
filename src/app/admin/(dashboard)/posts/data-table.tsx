@@ -26,7 +26,7 @@ export default function PostsDataTable({
   onPaginationChange: (pageIndex: number, pageSize: number) => void;
   onSortingChange: (sorting: SortingState) => void;
   sorting: SortingState;
-  onFeaturedChange: (slug: string, isFeatured: boolean) => Promise<void>;
+  onFeaturedChange: (id: string, isFeatured: boolean) => Promise<void>;
 }) {
   return (
     <DataTable

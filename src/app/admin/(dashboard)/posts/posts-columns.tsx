@@ -14,7 +14,7 @@ import Link from "next/link";
 export default function postsColumns({
   onFeaturedChange,
 }: {
-  onFeaturedChange: (slug: string, isFeatured: boolean) => Promise<void>;
+  onFeaturedChange: (id: string, isFeatured: boolean) => Promise<void>;
 }): ColumnDef<
   Post & { category: Category; author: User; comments: Comment[] }
 >[] {
@@ -128,7 +128,7 @@ export default function postsColumns({
           <Switch
             defaultChecked={row.original.isFeatured}
             onCheckedChange={() =>
-              onFeaturedChange(row.original.slug, !row.original.isFeatured)
+              onFeaturedChange(row.original.id, !row.original.isFeatured)
             }
           />
         );
@@ -142,14 +142,11 @@ export default function postsColumns({
       ),
       cell: ({ row }) => {
         return (
-          <Button
-            size="icon"
-            onClick={() => {
-              console.log(row.original.id);
-            }}
-          >
-            <Edit />
-          </Button>
+          <Link href={`/admin/posts/${row.original.id}/edit`}>
+            <Button size="icon">
+              <Edit />
+            </Button>
+          </Link>
         );
       },
     },

@@ -1,7 +1,7 @@
 import { getCategories } from "@/actions";
 import { H3 } from "@/components/ui/typography";
 import AdminContainer from "../../components/admin-container";
-import NewPostForm from "./components/new-post-form";
+import PostForm from "../components/post-form";
 
 export default async function NewPostPage() {
   const categories = await getCategories();
@@ -16,7 +16,7 @@ export default async function NewPostPage() {
     >
       <div className="space-y-6">
         <H3>Yeni Gönderi</H3>
-        <NewPostForm categories={categories} />
+        <PostForm categories={categories} />
       </div>
     </AdminContainer>
   );

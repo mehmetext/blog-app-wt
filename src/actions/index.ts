@@ -170,7 +170,13 @@ export const getPost = async (slug: string) => {
   return post;
 };
 
-export const updatePost = async (slug: string, data: Partial<Post>) => {
+export const getPostById = async (id: string) => {
+  return prisma.post.findUnique({
+    where: { id },
+  });
+};
+
+export const updatePost = async (id: string, data: Partial<Post>) => {
   if (data.isFeatured) {
     await prisma.post.updateMany({
       where: { isFeatured: true },
@@ -179,7 +185,7 @@ export const updatePost = async (slug: string, data: Partial<Post>) => {
   }
 
   const post = await prisma.post.update({
-    where: { slug },
+    where: { id },
     data: {
       ...data,
     },

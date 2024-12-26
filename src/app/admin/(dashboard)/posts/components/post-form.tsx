@@ -1,6 +1,6 @@
 "use client";
 
-import { createPost } from "@/actions";
+import { createPost, updatePost } from "@/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -21,14 +21,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Category } from "@prisma/client";
+import { Category, Post } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-export const createPostSchema = z.object({
+export const postSchema = z.object({
   title: z
     .string()
     .min(3, "Başlık en az 3 karakter olmalıdır")
@@ -44,41 +44,44 @@ export const createPostSchema = z.object({
     .min(1, "Kapak görseli URL'si girmelisiniz"),
 });
 
-export type CreatePostInput = z.infer<typeof createPostSchema>;
+export type PostFormInput = z.infer<typeof postSchema>;
 
-interface NewPostFormProps {
+interface PostFormProps {
   categories: Category[];
+  post?: Post;
 }
 
-interface FormData {
-  title: string;
-  content: string;
-  categoryId: string;
-  coverImage: string;
-}
-
-export default function NewPostForm({ categories }: NewPostFormProps) {
+export default function PostForm({ categories, post }: PostFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const form = useForm<FormData>({
-    resolver: zodResolver(createPostSchema),
+  const form = useForm<PostFormInput>({
+    resolver: zodResolver(postSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      categoryId: "",
-      coverImage: "",
+      title: post?.title ?? "",
+      content: post?.content ?? "",
+      categoryId: post?.categoryId ?? "",
+      coverImage: post?.coverImage ?? "",
     },
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: PostFormInput) => {
     try {
       setIsLoading(true);
-      await createPost(data);
-      toast.success("Gönderi başarıyla oluşturuldu");
+      if (post) {
+        await updatePost(post.id, data);
+        toast.success("Gönderi başarıyla güncellendi");
+      } else {
+        await createPost(data);
+        toast.success("Gönderi başarıyla oluşturuldu");
+      }
       router.push("/admin/posts");
       router.refresh();
     } catch {
-      toast.error("Gönderi oluşturulurken bir hata oluştu");
+      toast.error(
+        post
+          ? "Gönderi güncellenirken bir hata oluştu"
+          : "Gönderi oluşturulurken bir hata oluştu"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -167,7 +170,13 @@ export default function NewPostForm({ categories }: NewPostFormProps) {
             />
 
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Oluşturuluyor..." : "Oluştur"}
+              {isLoading
+                ? post
+                  ? "Güncelleniyor..."
+                  : "Oluşturuluyor..."
+                : post
+                ? "Güncelle"
+                : "Oluştur"}
             </Button>
           </form>
         </Form>

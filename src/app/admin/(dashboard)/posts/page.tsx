@@ -66,9 +66,9 @@ export default async function AdminPostsPage({
             })}`
           );
         }}
-        onFeaturedChange={async (slug, isFeatured) => {
+        onFeaturedChange={async (id, isFeatured) => {
           "use server";
-          await updatePost(slug, { isFeatured });
+          await updatePost(id, { isFeatured });
           redirect(
             `/admin/posts${postsNuqs.serializer({
               sortBy,
