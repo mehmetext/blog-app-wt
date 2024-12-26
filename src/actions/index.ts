@@ -6,6 +6,7 @@ import { Comment, CommentStatus, Post, Prisma } from "@prisma/client";
 import { compare } from "bcrypt";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import slugify from "slugify";
 
 export const getPosts = async ({
   page = 1,
@@ -476,4 +477,45 @@ export const updateCommentStatus = async (
 
     return 1;
   }
+};
+
+export const createPost = async ({
+  title,
+  content,
+  categoryId,
+  coverImage,
+}: {
+  title: string;
+  content: string;
+  categoryId: string;
+  coverImage: string;
+}) => {
+  const user = await currentUser();
+
+  if (!user) {
+    throw new Error("Unauthorized");
+  }
+
+  const slug = slugify(title, { lower: true, strict: true });
+
+  const existingPost = await prisma.post.findUnique({
+    where: { slug },
+  });
+
+  if (existingPost) {
+    throw new Error("Bu başlıkta bir gönderi zaten mevcut");
+  }
+
+  const post = await prisma.post.create({
+    data: {
+      title,
+      slug,
+      content,
+      coverImage,
+      categoryId,
+      authorId: user.id,
+    },
+  });
+
+  return post;
 };

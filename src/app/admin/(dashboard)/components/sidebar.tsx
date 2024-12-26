@@ -50,8 +50,10 @@ export default function Sidebar({ user }: { user: User }) {
     {
       label: "Gönderiler",
       action: (
-        <SidebarGroupAction>
-          <Plus /> <span className="sr-only">Gönderi Ekle</span>
+        <SidebarGroupAction asChild>
+          <Link href="/admin/posts/new">
+            <Plus /> <span className="sr-only">Gönderi Ekle</span>
+          </Link>
         </SidebarGroupAction>
       ),
       items: [
