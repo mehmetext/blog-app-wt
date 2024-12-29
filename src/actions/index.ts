@@ -259,7 +259,7 @@ export const login = async (email: string, password: string) => {
     value: accessToken,
     httpOnly: false,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 5, // 5 minutes
+    maxAge: 60 * 15, // 15 minutes
   });
 
   cookieList.set({
@@ -267,53 +267,10 @@ export const login = async (email: string, password: string) => {
     value: refreshToken,
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60, // 1 hour
+    maxAge: 60 * 60 * 24 * 7, // 7 days
   });
 
   return { status: true, code: "login-success" };
-};
-
-export const refreshTokens = async () => {
-  const cookieList = await cookies();
-  const refreshToken = cookieList.get("refresh-token")?.value;
-
-  if (!refreshToken) {
-    return false;
-  }
-
-  const { payload } = await jwtVerify(
-    refreshToken,
-    new TextEncoder().encode(process.env.JWT_REFRESH_SECRET)
-  );
-
-  const user = await prisma?.user.findUnique({
-    where: { id: payload.sub! },
-  });
-
-  if (!user) {
-    return false;
-  }
-
-  const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-    await generateTokens(user.id);
-
-  cookieList.set({
-    name: "access-token",
-    value: newAccessToken,
-    httpOnly: false,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 5, // 5 minutes
-  });
-
-  cookieList.set({
-    name: "refresh-token",
-    value: newRefreshToken,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60, // 1 hour
-  });
-
-  return true;
 };
 
 export const logout = async () => {

@@ -15,14 +15,14 @@ export async function generateTokens(userId: string) {
     .setSubject(userId)
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setIssuedAt()
-    .setExpirationTime("5m")
+    .setExpirationTime("15m")
     .sign(new TextEncoder().encode(process.env.JWT_SECRET));
 
   const refreshToken = await new SignJWT()
     .setSubject(userId)
     .setProtectedHeader({ alg: "HS256", typ: "JWT" })
     .setIssuedAt()
-    .setExpirationTime("1h")
+    .setExpirationTime("7d")
     .sign(new TextEncoder().encode(process.env.JWT_REFRESH_SECRET));
 
   return { accessToken, refreshToken };

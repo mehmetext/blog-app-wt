@@ -68,7 +68,7 @@ export default async function middleware(req: NextRequest) {
         value: newAccessToken,
         httpOnly: false,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 5, // 5 dakika
+        maxAge: 60 * 15, // 15 minutes
       });
 
       nextResponse.cookies.set({
@@ -76,7 +76,7 @@ export default async function middleware(req: NextRequest) {
         value: newRefreshToken,
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 60 * 60, // 1 saat
+        maxAge: 60 * 60 * 24 * 7, // 7 days
       });
 
       return nextResponse;
