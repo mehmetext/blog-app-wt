@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     );
 
     const user = await prisma.user.findUnique({
-      where: { id: payload.sub! },
+      where: { id: payload.sub },
     });
 
     if (!user) {
@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({
-      data: { ...(await generateTokens(payload.sub!)) },
+      data: { ...(await generateTokens(user.id)) },
     });
   } catch {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
