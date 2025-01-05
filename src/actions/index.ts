@@ -86,7 +86,7 @@ export const getCategories = async () => {
   const res = await fetch(`${process.env.API_URL}/api/categories`);
   const json = await res.json();
 
-  return json.data as Category[];
+  return json.data as (Category & { _count: { posts: number } })[];
 };
 
 export const getCategory = async (slug: string) => {
@@ -203,7 +203,7 @@ export const getUsers = async () => {
   const res = await fetch(`${process.env.API_URL}/api/users`);
   const json = await res.json();
 
-  return json.data as User[];
+  return json.data as (User & { _count: { Post: number } })[];
 };
 
 export const getComments = async ({
