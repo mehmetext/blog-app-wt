@@ -35,6 +35,21 @@ A full-featured blog application built with Next.js, TypeScript, and PostgreSQL.
   - Comments
 - Soft delete support for all entities
 
+### 🏗 Architecture
+
+The project follows a three-layer architecture:
+
+- Client calls server actions
+- Actions make fetch requests to internal API routes
+- API routes communicate with the database
+
+While direct database access from actions would have been possible, this architecture was specifically chosen to:
+
+- Learn and practice API development
+- Gain experience with fetch operations
+- Maintain a clear separation of concerns
+- Create a more maintainable and scalable structure
+
 ### Admin Dashboard
 
 - User management
