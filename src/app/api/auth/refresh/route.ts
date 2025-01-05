@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
       new TextEncoder().encode(process.env.JWT_REFRESH_SECRET)
     );
 
-    const user = await prisma?.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: payload.sub! },
     });
 
