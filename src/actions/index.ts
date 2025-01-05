@@ -290,16 +290,21 @@ export const currentUser = async () => {
     return null;
   }
 
-  const { payload } = await jwtVerify(
-    accessToken,
-    new TextEncoder().encode(process.env.JWT_SECRET)
-  );
+  try {
+    const { payload } = await jwtVerify(
+      accessToken,
+      new TextEncoder().encode(process.env.JWT_SECRET)
+    );
 
-  const user = await prisma.user.findUnique({
-    where: { id: payload.sub },
-  });
+    const user = await prisma.user.findUnique({
+      where: { id: payload.sub },
+    });
 
-  return user;
+    return user;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };
 
 export const getUsers = async () => {
