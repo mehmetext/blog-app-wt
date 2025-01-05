@@ -27,7 +27,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       data: { ...(await generateTokens(user.id)) },
     });
-  } catch {
+  } catch (error) {
+    console.error(error);
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 }
