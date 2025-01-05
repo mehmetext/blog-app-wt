@@ -148,6 +148,30 @@ export const login = async (email: string, password: string) => {
   return { status: true, code: "login-success" };
 };
 
+export const refreshTokens = async () => {
+  const cookieList = await cookies();
+  const refreshToken = cookieList.get("refresh-token")?.value;
+
+  if (!refreshToken) {
+    throw new Error("Refresh token not found");
+  }
+
+  const response = await fetch(`${process.env.API_URL}/api/auth/refresh`, {
+    method: "GET",
+    headers: {
+      Cookie: `refresh-token=${refreshToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to refresh token");
+  }
+
+  const json = await response.json();
+
+  return json.data as { accessToken: string; refreshToken: string };
+};
+
 export const logout = async () => {
   const cookieList = await cookies();
   cookieList.delete("access-token");
