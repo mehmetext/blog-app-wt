@@ -1,10 +1,6 @@
 "use server";
 
-import prisma from "@/lib/prisma";
-import { generateTokens } from "@/lib/utils";
 import { Category, Comment, CommentStatus, Post, User } from "@prisma/client";
-import { compare } from "bcrypt";
-import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 export const getPosts = async ({
@@ -120,19 +116,18 @@ export const createComment = async ({
 
 export const login = async (email: string, password: string) => {
   const cookieList = await cookies();
-  const user = await prisma.user.findUnique({ where: { email } });
 
-  if (!user) {
+  const res = await fetch(`${process.env.API_URL}/api/auth/login`, {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+  const json = await res.json();
+
+  if (!res.ok) {
     return { status: false, code: "invalid-credentials" };
   }
 
-  const isPasswordValid = await compare(password, user.hashedPassword);
-
-  if (!isPasswordValid) {
-    return { status: false, code: "invalid-credentials" };
-  }
-
-  const { accessToken, refreshToken } = await generateTokens(user.id);
+  const { accessToken, refreshToken } = json.data;
 
   cookieList.set({
     name: "access-token",
@@ -162,25 +157,18 @@ export const logout = async () => {
 };
 
 export const currentUser = async () => {
-  const cookieList = await cookies();
-
-  const accessToken = cookieList.get("access-token")?.value;
-
-  if (!accessToken) {
-    return null;
-  }
-
   try {
-    const { payload } = await jwtVerify(
-      accessToken,
-      new TextEncoder().encode(process.env.JWT_SECRET)
-    );
+    const cookieList = await cookies();
 
-    const user = await prisma.user.findUnique({
-      where: { id: payload.sub },
+    const res = await fetch(`${process.env.API_URL}/api/auth/current-user`, {
+      headers: {
+        Authorization: `Bearer ${cookieList.get("access-token")?.value}`,
+      },
     });
 
-    return user;
+    const json = await res.json();
+
+    return json.data as User;
   } catch (error) {
     console.error(error);
     return null;
