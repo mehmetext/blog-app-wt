@@ -74,7 +74,7 @@ export default function PostForm({ categories, post }: PostFormProps) {
         await createPost(data);
         toast.success("Gönderi başarıyla oluşturuldu");
       }
-      // router.push("/admin/posts");
+      router.push("/admin/posts");
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
