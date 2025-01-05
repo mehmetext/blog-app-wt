@@ -27,14 +27,14 @@ export async function PUT(req: NextRequest) {
       data: { status },
     });
 
-    return NextResponse.json({ data: updatedComments }, { status: 200 });
+    return NextResponse.json({ data: updatedComments.count }, { status: 200 });
   } else {
-    const updatedComment = await prisma.comment.update({
+    await prisma.comment.update({
       where: { id },
       data: { status },
     });
 
-    return NextResponse.json({ data: updatedComment }, { status: 200 });
+    return NextResponse.json({ data: 1 }, { status: 200 });
   }
 }
 

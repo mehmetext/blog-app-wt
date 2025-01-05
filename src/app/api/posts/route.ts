@@ -1,6 +1,41 @@
 import prisma from "@/lib/prisma";
 import { Post, Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import slugify from "slugify";
+
+export async function POST(request: NextRequest) {
+  const post = await request.json();
+  const { title, content, categoryId, coverImage, userId } = post;
+
+  const slug = slugify(title, { lower: true, strict: true });
+
+  const existingPost = await prisma.post.findUnique({
+    where: { slug },
+  });
+
+  if (existingPost) {
+    return NextResponse.json(
+      {
+        error: "post-already-exists",
+        message: "Bu başlıkta bir gönderi zaten mevcut",
+      },
+      { status: 400 }
+    );
+  }
+
+  const newPost = await prisma.post.create({
+    data: {
+      title,
+      slug,
+      content,
+      coverImage,
+      categoryId,
+      authorId: userId,
+    },
+  });
+
+  return NextResponse.json({ data: newPost }, { status: 201 });
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -13,8 +48,9 @@ export async function GET(request: NextRequest) {
   const sortBy = searchParams.get("sortBy");
   const sortDesc = searchParams.get("sortDesc");
   const featured =
-    searchParams.get("featured") != undefined &&
-    searchParams.get("featured") === "true";
+    searchParams.get("featured") != undefined
+      ? searchParams.get("featured") === "true"
+      : undefined;
 
   const orderBy: Prisma.PostOrderByWithRelationInput = {};
 

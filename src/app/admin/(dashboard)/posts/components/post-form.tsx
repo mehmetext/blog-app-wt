@@ -74,14 +74,13 @@ export default function PostForm({ categories, post }: PostFormProps) {
         await createPost(data);
         toast.success("Gönderi başarıyla oluşturuldu");
       }
-      router.push("/admin/posts");
-      router.refresh();
-    } catch {
-      toast.error(
-        post
-          ? "Gönderi güncellenirken bir hata oluştu"
-          : "Gönderi oluşturulurken bir hata oluştu"
-      );
+      // router.push("/admin/posts");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Bir hata oluştu");
+      }
     } finally {
       setIsLoading(false);
     }

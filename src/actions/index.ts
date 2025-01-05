@@ -2,11 +2,10 @@
 
 import prisma from "@/lib/prisma";
 import { generateTokens } from "@/lib/utils";
-import { Comment, CommentStatus, Post, Prisma } from "@prisma/client";
+import { Category, Comment, CommentStatus, Post, User } from "@prisma/client";
 import { compare } from "bcrypt";
 import { jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import slugify from "slugify";
 
 export const getPosts = async ({
   page = 1,
@@ -25,197 +24,80 @@ export const getPosts = async ({
   sortDesc?: boolean;
   featured?: boolean;
 }) => {
-  const orderBy: Prisma.PostOrderByWithRelationInput = {};
+  const searchParams = new URLSearchParams();
 
-  if (sortBy) {
-    switch (sortBy) {
-      case "comments":
-        break;
-      case "author":
-        orderBy.author = {
-          name: sortDesc ? "desc" : "asc",
-        };
-        break;
-      case "category":
-        orderBy.category = {
-          name: sortDesc ? "desc" : "asc",
-        };
-        break;
-      default:
-        orderBy[sortBy as keyof Post] = sortDesc ? "desc" : "asc";
-        break;
-    }
-  }
+  if (page) searchParams.set("page", page.toString());
+  if (limit) searchParams.set("limit", limit.toString());
+  if (q) searchParams.set("q", q);
+  if (category) searchParams.set("category", category);
+  if (sortBy) searchParams.set("sortBy", sortBy);
+  if (sortDesc) searchParams.set("sortDesc", sortDesc.toString());
+  if (featured) searchParams.set("featured", featured.toString());
 
-  const [posts, total] = await prisma.$transaction([
-    prisma.post.findMany({
-      include: {
-        category: true,
-        author: true,
-        comments: {
-          where: {
-            deletedAt: null,
-            status: "APPROVED",
-          },
-        },
-      },
-      orderBy,
-      take: limit,
-      skip: (page - 1) * limit,
-      where: {
-        // Only show posts that are not deleted
-        deletedAt: null,
-        // Only show posts that are in the category
-        ...(category
-          ? {
-              category: {
-                slug: category,
-              },
-            }
-          : {}),
-        // Search for posts that contain the query in the title or content
-        ...(q
-          ? {
-              OR: [
-                {
-                  title: {
-                    contains: q,
-                    mode: "insensitive",
-                  },
-                },
-                {
-                  content: {
-                    contains: q,
-                    mode: "insensitive",
-                  },
-                },
-                {
-                  comments: {
-                    some: {
-                      content: { contains: q, mode: "insensitive" },
-                      deletedAt: null,
-                      status: "APPROVED",
-                    },
-                  },
-                },
-              ],
-            }
-          : {}),
-        // Show featured posts filtered by featured
-        ...(featured ? { isFeatured: featured } : {}),
-      },
-    }),
-    prisma.post.count({
-      where: {
-        deletedAt: null,
-        ...(category
-          ? {
-              category: {
-                slug: category,
-              },
-            }
-          : {}),
-        ...(q
-          ? {
-              OR: [
-                { title: { contains: q, mode: "insensitive" } },
-                { content: { contains: q, mode: "insensitive" } },
-                {
-                  comments: {
-                    some: {
-                      content: { contains: q, mode: "insensitive" },
-                      deletedAt: null,
-                      status: "APPROVED",
-                    },
-                  },
-                },
-              ],
-            }
-          : {}),
-        ...(featured ? { isFeatured: featured } : {}),
-      },
-    }),
-  ]);
+  const res = await fetch(
+    `${process.env.API_URL}/api/posts?${searchParams.toString()}`
+  );
+  const json = await res.json();
 
-  if (sortBy === "comments") {
-    posts.sort((a, b) => b.comments.length - a.comments.length);
-    if (sortDesc) posts.reverse();
-  }
-
-  return {
-    items: posts,
-    limit,
-    pageCount: Math.ceil(total / limit),
+  return json.data as {
+    items: (Post & {
+      category: Category;
+      author: User;
+      comments: Comment[];
+    })[];
+    limit: number;
+    pageCount: number;
   };
 };
 
 export const getPost = async (slug: string) => {
-  const post = await prisma.post.findUnique({
-    include: {
-      category: true,
-      author: true,
-      comments: {
-        where: {
-          deletedAt: null,
-          status: "APPROVED",
-        },
-      },
-    },
-    where: {
-      slug: slug,
-      deletedAt: null,
-    },
-  });
+  const res = await fetch(`${process.env.API_URL}/api/posts/${slug}`);
+  const json = await res.json();
 
-  return post;
+  return json.data as Post & {
+    category: Category;
+    author: User;
+    comments: Comment[];
+  };
 };
 
 export const getPostById = async (id: string) => {
-  return prisma.post.findUnique({
-    where: { id },
-  });
+  const res = await fetch(`${process.env.API_URL}/api/admin/posts/${id}`);
+  const json = await res.json();
+
+  return json.data as Post & {
+    category: Category;
+    author: User;
+    comments: Comment[];
+  };
 };
 
 export const updatePost = async (id: string, data: Partial<Post>) => {
-  if (data.isFeatured) {
-    await prisma.post.updateMany({
-      where: { isFeatured: true },
-      data: { isFeatured: false },
-    });
-  }
-
-  const post = await prisma.post.update({
-    where: { id },
-    data: {
-      ...data,
-    },
+  const res = await fetch(`${process.env.API_URL}/api/admin/posts/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
   });
+  const json = await res.json();
 
-  return post;
+  return json.data as Post & {
+    category: Category;
+    author: User;
+    comments: Comment[];
+  };
 };
 
 export const getCategories = async () => {
-  const categories = await prisma.category.findMany({
-    include: {
-      _count: { select: { posts: true } },
-    },
-    where: {
-      deletedAt: null,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const res = await fetch(`${process.env.API_URL}/api/categories`);
+  const json = await res.json();
 
-  return categories;
+  return json.data as Category[];
 };
 
 export const getCategory = async (slug: string) => {
-  const category = await prisma.category.findUnique({
-    where: { slug },
-  });
+  const res = await fetch(`${process.env.API_URL}/api/categories/${slug}`);
+  const json = await res.json();
 
-  return category;
+  return json.data as Category;
 };
 
 export const createComment = async ({
@@ -227,15 +109,13 @@ export const createComment = async ({
   authorName: string;
   postId: string;
 }) => {
-  const newComment = await prisma.comment.create({
-    data: {
-      content,
-      authorName,
-      postId,
-    },
+  const res = await fetch(`${process.env.API_URL}/api/comments`, {
+    method: "POST",
+    body: JSON.stringify({ content, authorName, postId }),
   });
+  const json = await res.json();
 
-  return newComment;
+  return json.data as Comment;
 };
 
 export const login = async (email: string, password: string) => {
@@ -308,27 +188,10 @@ export const currentUser = async () => {
 };
 
 export const getUsers = async () => {
-  const users = await prisma.user.findMany({
-    include: {
-      _count: {
-        select: {
-          Post: {
-            where: {
-              deletedAt: null,
-            },
-          },
-        },
-      },
-    },
-    where: {
-      deletedAt: null,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  const res = await fetch(`${process.env.API_URL}/api/users`);
+  const json = await res.json();
 
-  return users;
+  return json.data as User[];
 };
 
 export const getComments = async ({
@@ -344,85 +207,27 @@ export const getComments = async ({
   sortBy?: string;
   sortDesc?: boolean;
 }) => {
-  const orderBy: Prisma.CommentOrderByWithRelationInput = {};
+  const searchParams = new URLSearchParams();
 
-  if (sortBy) {
-    switch (sortBy) {
-      case "postTitle":
-        orderBy.post = {
-          title: sortDesc ? "desc" : "asc",
-        };
-        break;
-      default:
-        orderBy[sortBy as keyof Comment] = sortDesc ? "desc" : "asc";
-        break;
-    }
-  }
+  if (page) searchParams.set("page", page.toString());
+  if (limit) searchParams.set("limit", limit.toString());
+  if (q) searchParams.set("q", q);
+  if (sortBy) searchParams.set("sortBy", sortBy);
+  if (sortDesc) searchParams.set("sortDesc", sortDesc.toString());
 
-  const [comments, total] = await prisma.$transaction([
-    prisma.comment.findMany({
-      include: {
-        post: {
-          include: {
-            category: true,
-          },
-        },
-      },
-      orderBy,
-      take: limit,
-      skip: (page - 1) * limit,
-      where: {
-        // Only show posts that are not deleted
-        deletedAt: null,
-        ...(q
-          ? {
-              OR: [
-                {
-                  content: {
-                    contains: q,
-                    mode: "insensitive",
-                  },
-                },
-                {
-                  authorName: {
-                    contains: q,
-                    mode: "insensitive",
-                  },
-                },
-              ],
-            }
-          : {}),
-      },
-    }),
-    prisma.comment.count({
-      where: {
-        deletedAt: null,
-        ...(q
-          ? {
-              OR: [
-                {
-                  content: {
-                    contains: q,
-                    mode: "insensitive",
-                  },
-                },
-                {
-                  authorName: {
-                    contains: q,
-                    mode: "insensitive",
-                  },
-                },
-              ],
-            }
-          : {}),
-      },
-    }),
-  ]);
+  const res = await fetch(
+    `${process.env.API_URL}/api/comments?${searchParams.toString()}`
+  );
+  const json = await res.json();
 
-  return {
-    items: comments,
-    limit,
-    pageCount: Math.ceil(total / limit),
+  return json.data as {
+    items: (Comment & {
+      post: Post & {
+        category: Category;
+      };
+    })[];
+    limit: number;
+    pageCount: number;
   };
 };
 
@@ -430,21 +235,13 @@ export const updateCommentStatus = async (
   id: string | string[],
   status: CommentStatus
 ) => {
-  if (Array.isArray(id)) {
-    const updatedComments = await prisma.comment.updateMany({
-      where: { id: { in: id } },
-      data: { status },
-    });
+  const res = await fetch(`${process.env.API_URL}/api/comments`, {
+    method: "PUT",
+    body: JSON.stringify({ id, status }),
+  });
+  const json = await res.json();
 
-    return updatedComments.count;
-  } else {
-    await prisma.comment.update({
-      where: { id },
-      data: { status },
-    });
-
-    return 1;
-  }
+  return json.data;
 };
 
 export const createPost = async ({
@@ -464,49 +261,42 @@ export const createPost = async ({
     throw new Error("Unauthorized");
   }
 
-  const slug = slugify(title, { lower: true, strict: true });
-
-  const existingPost = await prisma.post.findUnique({
-    where: { slug },
+  const res = await fetch(`${process.env.API_URL}/api/posts`, {
+    method: "POST",
+    body: JSON.stringify({
+      title,
+      content,
+      categoryId,
+      coverImage,
+      userId: user.id,
+    }),
   });
 
-  if (existingPost) {
-    throw new Error("Bu başlıkta bir gönderi zaten mevcut");
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error(json.message);
   }
 
-  const post = await prisma.post.create({
-    data: {
-      title,
-      slug,
-      content,
-      coverImage,
-      categoryId,
-      authorId: user.id,
-    },
-  });
-
-  return post;
+  return json.data as Post;
 };
 
 export async function createCategory(data: { name: string }) {
-  const slug = slugify(data.name, { lower: true, strict: true });
-
-  return prisma.category.create({
-    data: {
-      name: data.name,
-      slug,
-    },
+  const res = await fetch(`${process.env.API_URL}/api/categories`, {
+    method: "POST",
+    body: JSON.stringify(data),
   });
+  const json = await res.json();
+
+  return json.data as Category;
 }
 
 export async function updateCategory(id: string, data: { name: string }) {
-  const slug = slugify(data.name, { lower: true, strict: true });
-
-  return prisma.category.update({
-    where: { id },
-    data: {
-      name: data.name,
-      slug,
-    },
+  const res = await fetch(`${process.env.API_URL}/api/admin/categories/${id}`, {
+    method: "POST",
+    body: JSON.stringify(data),
   });
+  const json = await res.json();
+
+  return json.data as Category;
 }
