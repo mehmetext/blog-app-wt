@@ -3,6 +3,8 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { redirect } from "next/navigation";
 import Sidebar from "./components/sidebar";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
   children,
 }: {
