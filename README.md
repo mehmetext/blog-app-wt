@@ -81,7 +81,7 @@ While direct database access from actions would have been possible, this archite
 
 1. Clone the repository:
    \`\`\`bash
-   git clone <repository-url>
+   git clone https://github.com/mehmetext/blog-app-wt
    cd blog-app-wt
    \`\`\`
 
@@ -133,6 +133,7 @@ prisma/
 Required environment variables:
 
 \`\`\`
+API_URL=http://localhost:3000/api
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
 JWT_SECRET=your-jwt-secret
 JWT_REFRESH_SECRET=your-jwt-refresh-secret
