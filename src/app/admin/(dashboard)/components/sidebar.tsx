@@ -61,11 +61,6 @@ export default function Sidebar({ user }: { user: User }) {
     },
     {
       label: "Kategoriler",
-      action: (
-        <SidebarGroupAction>
-          <Plus /> <span className="sr-only">Kategori Ekle</span>
-        </SidebarGroupAction>
-      ),
       items: [
         {
           icon: FolderTree,
