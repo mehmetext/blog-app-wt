@@ -22,16 +22,16 @@ export default async function AdminPostsPage({
   return (
     <AdminContainer
       breadcrumb={[
-        { label: "Admin Paneli", href: "/admin" },
-        { label: "Gönderiler", href: "/admin/posts" },
+        { label: "Admin Panel", href: "/admin" },
+        { label: "Posts", href: "/admin/posts" },
       ]}
     >
       <div className="flex justify-between items-center">
-        <H3>Gönderiler</H3>
+        <H3>Posts</H3>
         <Button asChild>
           <Link href="/admin/posts/new">
             <Plus className="w-4 h-4 mr-2" />
-            Yeni Gönderi
+            New Post
           </Link>
         </Button>
       </div>

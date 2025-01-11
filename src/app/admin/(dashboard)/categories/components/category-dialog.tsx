@@ -32,14 +32,14 @@ export default function CategoryDialog({
         {trigger ?? (
           <Button>
             <Plus className="w-4 h-4 mr-2" />
-            Yeni Kategori
+            New Category
           </Button>
         )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {category ? "Kategori Düzenle" : "Yeni Kategori"}
+            {category ? "Edit Category" : "New Category"}
           </DialogTitle>
         </DialogHeader>
         <CategoryForm

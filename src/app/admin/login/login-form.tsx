@@ -32,8 +32,8 @@ export function LoginForm({
     } else {
       toast.error(
         code === "invalid-credentials"
-          ? "Böyle bir kullanıcı bulunamadı"
-          : `Bir hata oluştu: ${code}`
+          ? "User not found"
+          : `An error occurred: ${code}`
       );
     }
   };
@@ -42,8 +42,8 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Giriş Yap</CardTitle>
-          <CardDescription>Email ve şifrenizi giriniz</CardDescription>
+          <CardTitle className="text-2xl">Login</CardTitle>
+          <CardDescription>Enter your email and password</CardDescription>
         </CardHeader>
         <CardContent>
           <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
@@ -60,7 +60,7 @@ export function LoginForm({
             </div>
             <div className="grid gap-2">
               <div className="flex items-center">
-                <Label htmlFor="password">Şifre</Label>
+                <Label htmlFor="password">Password</Label>
               </div>
               <Input
                 value={password}
@@ -71,7 +71,7 @@ export function LoginForm({
               />
             </div>
             <Button type="submit" className="w-full">
-              Giriş Yap
+              Login
             </Button>
           </form>
         </CardContent>

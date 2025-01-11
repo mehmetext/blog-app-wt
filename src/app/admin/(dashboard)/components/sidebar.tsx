@@ -47,36 +47,34 @@ export default function Sidebar({ user }: { user: User }) {
 
   const menuGroups: SidebarMenuGroup[] = [
     {
-      label: "Gönderiler",
+      label: "Posts",
       action: (
         <SidebarGroupAction asChild>
           <Link href="/admin/posts/new">
-            <Plus /> <span className="sr-only">Gönderi Ekle</span>
+            <Plus /> <span className="sr-only">Add Post</span>
           </Link>
         </SidebarGroupAction>
       ),
-      items: [
-        { icon: FileText, label: "Tüm Gönderiler", href: "/admin/posts" },
-      ],
+      items: [{ icon: FileText, label: "All Posts", href: "/admin/posts" }],
     },
     {
-      label: "Kategoriler",
+      label: "All Categories",
       items: [
         {
           icon: FolderTree,
-          label: "Tüm Kategoriler",
+          label: "All Categories",
           href: "/admin/categories",
         },
       ],
     },
     {
-      label: "Kullanıcılar",
-      items: [{ icon: Users, label: "Tüm Kullanıcılar", href: "/admin/users" }],
+      label: "Users",
+      items: [{ icon: Users, label: "All Users", href: "/admin/users" }],
     },
     {
-      label: "Yorumlar",
+      label: "Comments",
       items: [
-        { icon: MessageSquare, label: "Tüm Yorumlar", href: "/admin/comments" },
+        { icon: MessageSquare, label: "All Comments", href: "/admin/comments" },
       ],
     },
   ];
@@ -97,7 +95,7 @@ export default function Sidebar({ user }: { user: User }) {
               className={cn(buttonVariants({ size: "sm" }), "w-full")}
             >
               <Home />
-              <span>Siteyi Görüntüle</span>
+              <span>View Site</span>
             </Link>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -140,7 +138,7 @@ export default function Sidebar({ user }: { user: User }) {
                 className="w-[--radix-popper-anchor-width]"
               >
                 <DropdownMenuItem onClick={logout}>
-                  <span>Çıkış Yap</span>
+                  <span>Logout</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

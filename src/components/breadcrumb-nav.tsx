@@ -33,13 +33,13 @@ export function BreadcrumbNav({ items = [] }: BreadcrumbNavProps) {
           {isHome ? (
             <BreadcrumbPage className="flex items-center gap-2">
               <Home className="h-4 w-4" />
-              <span>Ana Sayfa</span>
+              <span>Home</span>
             </BreadcrumbPage>
           ) : (
             <BreadcrumbLink asChild>
               <Link href="/" className="flex items-center gap-2">
                 <Home className="h-4 w-4" />
-                <span>Ana Sayfa</span>
+                <span>Home</span>
               </Link>
             </BreadcrumbLink>
           )}

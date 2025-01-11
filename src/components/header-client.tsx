@@ -21,10 +21,10 @@ export default function HeaderClient({
   categories: Category[];
 }) {
   const routes = [
-    { label: "Ana Sayfa", href: "/" },
-    { label: "Hakkımızda", href: "/about" },
+    { label: "Home", href: "/" },
+    { label: "About", href: "/about" },
     {
-      label: "Kategoriler",
+      label: "Categories",
       subRoutes: categories.map((category) => ({
         href: `/${category.slug}`,
         label: category.name,

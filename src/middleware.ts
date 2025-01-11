@@ -7,7 +7,7 @@ export default async function middleware(req: NextRequest) {
   const cookieList = await cookies();
   const accessToken = cookieList.get("access-token");
 
-  // Her zaman next() ile devam edecek olan rotalar
+  // Routes that will always continue with next()
   if (
     req.nextUrl.pathname.startsWith("/api") ||
     req.nextUrl.pathname.startsWith("/_next") ||
@@ -17,7 +17,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Admin rotaları için özel kontrol
+  // Special check for admin routes
   const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
 
   try {
@@ -25,6 +25,7 @@ export default async function middleware(req: NextRequest) {
       throw new Error("Access token not found");
     }
 
+    // Validate access token
     // Access token'ı doğrula
     await jwtVerify(
       accessToken.value,
@@ -33,15 +34,15 @@ export default async function middleware(req: NextRequest) {
 
     return NextResponse.next();
   } catch {
-    // Token geçersiz veya expire olmuş, refresh token ile yenilemeyi dene
+    // Token is invalid or expired, try to refresh with refresh token
     const refreshToken = cookieList.get("refresh-token");
 
     if (!refreshToken) {
-      // Eğer admin rotasıysa ve refresh token yoksa login'e yönlendir
+      // If it's an admin route and there's no refresh token, redirect to login
       if (isAdminRoute) {
         return NextResponse.redirect(new URL("/admin/login", req.url));
       }
-      // Admin rotası değilse devam et
+      // If it's not an admin route, continue
       return NextResponse.next();
     }
 
@@ -49,7 +50,7 @@ export default async function middleware(req: NextRequest) {
       const tokens = await refreshTokens();
       const nextResponse = NextResponse.next();
 
-      // Yeni tokenları set et
+      // Set new tokens
       nextResponse.cookies.set({
         name: "access-token",
         value: tokens.accessToken,
@@ -70,11 +71,11 @@ export default async function middleware(req: NextRequest) {
     } catch {
       cookieList.delete("refresh-token");
       cookieList.delete("access-token");
-      // Refresh token da geçersizse ve admin rotasıysa login'e yönlendir
+      // If refresh token is also invalid and it's an admin route, redirect to login
       if (isAdminRoute) {
         return NextResponse.redirect(new URL("/admin/login", req.url));
       }
-      // Admin rotası değilse devam et
+      // If it's not an admin route, continue
       return NextResponse.next();
     }
   }

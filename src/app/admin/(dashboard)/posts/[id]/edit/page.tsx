@@ -22,13 +22,13 @@ export default async function EditPostPage({
   return (
     <AdminContainer
       breadcrumb={[
-        { label: "Admin Paneli", href: "/admin" },
-        { label: "Gönderiler", href: "/admin/posts" },
-        { label: "Gönderi Düzenle", href: `/admin/posts/${id}/edit` },
+        { label: "Admin Panel", href: "/admin" },
+        { label: "Posts", href: "/admin/posts" },
+        { label: "Edit Post", href: `/admin/posts/${id}/edit` },
       ]}
     >
       <div className="space-y-6">
-        <H3>Gönderi Düzenle</H3>
+        <H3>Edit Post</H3>
         <PostForm categories={categories} post={post} />
       </div>
     </AdminContainer>

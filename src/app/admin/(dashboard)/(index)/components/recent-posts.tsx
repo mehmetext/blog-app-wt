@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Category, Comment, Post, User } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
-import { tr } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { Calendar, MessageCircle } from "lucide-react";
 import Link from "next/link";
 
@@ -26,14 +26,14 @@ export function RecentPosts({ posts }: RecentPostsProps) {
               <span>
                 {formatDistanceToNow(new Date(post.createdAt), {
                   addSuffix: true,
-                  locale: tr,
+                  locale: enUS,
                 })}
               </span>
             </div>
             <span className="text-xs text-muted-foreground">•</span>
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <MessageCircle className="h-3 w-3" />
-              <span>{post.comments.length} yorum</span>
+              <span>{post.comments.length} comments</span>
             </div>
           </div>
           <Link

@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Muted } from "@/components/ui/typography";
 import { Category, Comment, Post, User } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
-import { tr } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { Loader, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -27,10 +27,10 @@ export default function Comments({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Yorumlar ({post.comments.length})</CardTitle>
+        <CardTitle>Comments ({post.comments.length})</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Yorum Formu */}
+        {/* Comment Form */}
         <form
           className="space-y-4"
           onSubmit={async (e) => {
@@ -52,14 +52,14 @@ export default function Comments({
             value={name}
             onChange={(e) => setName(e.target.value)}
             name="name"
-            placeholder="İsminiz (opsiyonel)"
+            placeholder="Your name (optional)"
           />
           <div className="flex gap-2">
             <Textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               name="content"
-              placeholder="Yorumunuz..."
+              placeholder="Your comment..."
               required
             />
             <Button type="submit" size="icon" disabled={isLoading}>
@@ -70,11 +70,12 @@ export default function Comments({
 
         {sent && (
           <Muted>
-            Yorumunuz gönderildi. Onaylandıktan sonra yayınlanacaktır.
+            Your comment has been submitted. It will be published after
+            approval.
           </Muted>
         )}
 
-        {/* Yorumlar Listesi */}
+        {/* Comments List */}
         <div className="space-y-4">
           {post.comments.map((comment) => (
             <div
@@ -83,12 +84,12 @@ export default function Comments({
             >
               <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <span className="font-medium">
-                  {comment.authorName ?? "Anonim"}
+                  {comment.authorName ?? "Anonymous"}
                 </span>
                 <span>
                   {formatDistanceToNow(comment.createdAt, {
                     addSuffix: true,
-                    locale: tr,
+                    locale: enUS,
                   })}
                 </span>
               </div>

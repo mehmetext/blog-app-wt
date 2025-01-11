@@ -43,7 +43,7 @@ export default function commentsColumns({
     {
       accessorKey: "content",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Yorum" />
+        <DataTableColumnHeader column={column} title="Comment" />
       ),
       minSize: 300,
       cell: ({ row }) => {
@@ -53,17 +53,17 @@ export default function commentsColumns({
     {
       accessorKey: "authorName",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Yazar" />
+        <DataTableColumnHeader column={column} title="Author" />
       ),
       cell: ({ row }) => {
-        return row.original.authorName ?? "Anonim";
+        return row.original.authorName ?? "Anonymous";
       },
     },
     {
       id: "postTitle",
       accessorFn: (row) => row.post.title,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Gönderi" />
+        <DataTableColumnHeader column={column} title="Post" />
       ),
       cell: ({ row }) => {
         return (
@@ -80,7 +80,7 @@ export default function commentsColumns({
     {
       accessorKey: "createdAt",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Oluşturulma Tarihi" />
+        <DataTableColumnHeader column={column} title="Created At" />
       ),
       cell: ({ row }) => {
         return format(row.original.createdAt, "dd.MM.yyyy HH:mm");
@@ -89,7 +89,7 @@ export default function commentsColumns({
     {
       accessorKey: "updatedAt",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Güncellenme Tarihi" />
+        <DataTableColumnHeader column={column} title="Updated At" />
       ),
       cell: ({ row }) => {
         return format(row.original.updatedAt, "dd.MM.yyyy HH:mm");
@@ -98,7 +98,7 @@ export default function commentsColumns({
     {
       accessorKey: "status",
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Durum" />
+        <DataTableColumnHeader column={column} title="Status" />
       ),
       cell: ({ row }) => {
         return (
@@ -127,7 +127,7 @@ export default function commentsColumns({
       accessorKey: "actions",
       enableSorting: false,
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="İşlemler" />
+        <DataTableColumnHeader column={column} title="Actions" />
       ),
       cell: ({ row }) => {
         return (
@@ -150,7 +150,7 @@ export default function commentsColumns({
                   await onStatusChange(row.original.id, "APPROVED");
                 }}
               >
-                Onayla
+                Approve
                 <Check />
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -159,7 +159,7 @@ export default function commentsColumns({
                   await onStatusChange(row.original.id, "REJECTED");
                 }}
               >
-                Reddet
+                Reject
                 <X />
               </DropdownMenuItem>
             </DropdownMenuContent>

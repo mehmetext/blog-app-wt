@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: "post-already-exists",
-        message: "Bu başlıkta bir gönderi zaten mevcut",
+        message: "A post with this title already exists",
       },
       { status: 400 }
     );

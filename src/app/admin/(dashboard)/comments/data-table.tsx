@@ -41,7 +41,7 @@ export default function CommentsDataTable({
       sorting={sorting}
       operations={[
         {
-          label: "Seçilenleri Onayla",
+          label: "Approve Selected",
           icon: Check,
           onClick: async (rows) => {
             await onBatchStatusChange(
@@ -51,7 +51,7 @@ export default function CommentsDataTable({
           },
         },
         {
-          label: "Seçilenleri Reddet",
+          label: "Reject Selected",
           icon: X,
           onClick: async (rows) => {
             await onBatchStatusChange(

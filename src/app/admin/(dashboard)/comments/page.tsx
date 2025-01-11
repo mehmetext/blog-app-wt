@@ -26,12 +26,12 @@ export default async function AdminCommentsPage({
   return (
     <AdminContainer
       breadcrumb={[
-        { label: "Admin Paneli", href: "/admin" },
-        { label: "Yorumlar", href: "/admin/comments" },
+        { label: "Admin Panel", href: "/admin" },
+        { label: "Comments", href: "/admin/comments" },
       ]}
     >
       <div className="flex justify-between items-center">
-        <H3>Yorumlar</H3>
+        <H3>Comments</H3>
       </div>
       <CommentsDataTable
         comments={comments}

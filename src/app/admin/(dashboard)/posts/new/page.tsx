@@ -9,13 +9,13 @@ export default async function NewPostPage() {
   return (
     <AdminContainer
       breadcrumb={[
-        { label: "Admin Paneli", href: "/admin" },
-        { label: "Gönderiler", href: "/admin/posts" },
-        { label: "Yeni Gönderi", href: "/admin/posts/new" },
+        { label: "Admin Panel", href: "/admin" },
+        { label: "Posts", href: "/admin/posts" },
+        { label: "New Post", href: "/admin/posts/new" },
       ]}
     >
       <div className="space-y-6">
-        <H3>Yeni Gönderi</H3>
+        <H3>New Post</H3>
         <PostForm categories={categories} />
       </div>
     </AdminContainer>

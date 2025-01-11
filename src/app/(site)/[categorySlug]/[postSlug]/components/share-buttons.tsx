@@ -24,7 +24,7 @@ export default function ShareButtons({ content }: { content: string }) {
           rel="noopener noreferrer"
         >
           <Twitter />
-          <span className="sr-only">Twitter&apos;da Paylaş</span>
+          <span className="sr-only">Share on Twitter</span>
         </Link>
       </Button>
 
@@ -37,7 +37,7 @@ export default function ShareButtons({ content }: { content: string }) {
           rel="noopener noreferrer"
         >
           <Facebook />
-          <span className="sr-only">Facebook&apos;ta Paylaş</span>
+          <span className="sr-only">Share on Facebook</span>
         </Link>
       </Button>
 
@@ -50,7 +50,7 @@ export default function ShareButtons({ content }: { content: string }) {
           rel="noopener noreferrer"
         >
           <Linkedin />
-          <span className="sr-only">LinkedIn&apos;de Paylaş</span>
+          <span className="sr-only">Share on LinkedIn</span>
         </Link>
       </Button>
 
@@ -61,7 +61,7 @@ export default function ShareButtons({ content }: { content: string }) {
           )}&body=${encodeURIComponent(shareUrl)}`}
         >
           <Mail />
-          <span className="sr-only">Email ile Paylaş</span>
+          <span className="sr-only">Share via Email</span>
         </Link>
       </Button>
 
@@ -70,12 +70,12 @@ export default function ShareButtons({ content }: { content: string }) {
         variant="ghost"
         onClick={() => {
           navigator.clipboard.writeText(shareUrl);
-          toast.success("Bağlantı kopyalandı");
+          toast.success("Link copied");
         }}
-        title="Bağlantıyı Kopyala"
+        title="Copy Link"
       >
         <Copy />
-        <span className="sr-only">Bağlantıyı Kopyala</span>
+        <span className="sr-only">Copy Link</span>
       </Button>
     </>
   );

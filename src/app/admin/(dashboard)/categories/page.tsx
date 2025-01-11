@@ -10,12 +10,12 @@ export default async function AdminCategoriesPage() {
   return (
     <AdminContainer
       breadcrumb={[
-        { label: "Admin Paneli", href: "/admin" },
-        { label: "Kategoriler", href: "/admin/categories" },
+        { label: "Admin Panel", href: "/admin" },
+        { label: "Categories", href: "/admin/categories" },
       ]}
     >
       <div className="flex justify-between items-center">
-        <H3>Kategoriler</H3>
+        <H3>Categories</H3>
         <CategoryDialog
           onSubmit={async (data) => {
             "use server";

@@ -10,12 +10,12 @@ export default async function AdminCategoriesPage() {
   return (
     <AdminContainer
       breadcrumb={[
-        { label: "Admin Paneli", href: "/admin" },
-        { label: "Kullanıcılar", href: "/admin/users" },
+        { label: "Admin Panel", href: "/admin" },
+        { label: "Users", href: "/admin/users" },
       ]}
     >
       <div className="flex justify-between items-center">
-        <H3>Kullanıcılar</H3>
+        <H3>Users</H3>
       </div>
       <DataTable columns={columns} data={users} />
     </AdminContainer>

@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { H1 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
-import { tr } from "date-fns/locale";
+import { enUS } from "date-fns/locale";
 import { Calendar, Edit, MessageCircle, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -77,13 +77,13 @@ export default async function PostPage({
             <span>
               {formatDistanceToNow(new Date(post.createdAt), {
                 addSuffix: true,
-                locale: tr,
+                locale: enUS,
               })}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <MessageCircle className="h-4 w-4" />
-            <span>{post.comments.length} yorum</span>
+            <span>{post.comments.length} comments</span>
           </div>
         </div>
       </div>

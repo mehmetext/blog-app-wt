@@ -8,13 +8,13 @@ export default async function AdminDashboardPage() {
   const posts = await getPosts({ limit: 5 });
 
   return (
-    <AdminContainer breadcrumb={[{ label: "Admin Paneli", href: "/admin" }]}>
+    <AdminContainer breadcrumb={[{ label: "Admin Panel", href: "/admin" }]}>
       <div className="space-y-6">
         <StatsOverview />
 
         <Card className="md:col-span-4">
           <CardHeader>
-            <CardTitle>Son Gönderiler</CardTitle>
+            <CardTitle>Recent Posts</CardTitle>
           </CardHeader>
           <CardContent>
             <RecentPosts posts={posts.items} />

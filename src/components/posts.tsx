@@ -34,7 +34,7 @@ export default function Posts({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-6">
-        <H1>{category ? `${category.name} Yazıları` : "Yazılar"}</H1>
+        <H1>{category ? `${category.name} Posts` : "Posts"}</H1>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -48,7 +48,7 @@ export default function Posts({
           className="flex justify-center items-center gap-2"
         >
           <Input
-            placeholder="Yazılarda ara..."
+            placeholder="Search in posts..."
             onChange={(e) => setQuery(e.target.value)}
             value={query}
           />
@@ -67,7 +67,7 @@ export default function Posts({
         <div className="flex flex-col items-center justify-center gap-2">
           <FileX className="h-12 w-12 text-muted-foreground" />
           <Muted>
-            {category ? "Bu kategoride yazı bulunamadı." : "Yazı bulunamadı."}
+            {category ? "No posts found in this category." : "No posts found."}
           </Muted>
         </div>
       )}

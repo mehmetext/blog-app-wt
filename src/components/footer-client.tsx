@@ -32,25 +32,25 @@ export default function FooterClient({
 }) {
   const footerLinks = [
     {
-      title: "Sayfalar",
+      title: "Pages",
       links: [
-        { label: "Ana Sayfa", href: "/" },
-        { label: "Hakkımızda", href: "/about" },
-        { label: "İletişim", href: "/contact" },
+        { label: "Home", href: "/" },
+        { label: "About", href: "/about" },
+        { label: "Contact", href: "/contact" },
       ],
     },
     {
-      title: "Kategoriler",
+      title: "Categories",
       links: categories.map((category) => ({
         label: category.name,
         href: `/${category.slug}`,
       })),
     },
     {
-      title: "Yasal",
+      title: "Legal",
       links: [
-        { label: "Gizlilik Politikası", href: "/privacy" },
-        { label: "Kullanım Koşulları", href: "/terms" },
+        { label: "Privacy Policy", href: "/privacy" },
+        { label: "Terms of Use", href: "/terms" },
       ],
     },
   ];
@@ -59,13 +59,13 @@ export default function FooterClient({
     <footer className="w-full border-t bg-background">
       <div className="container py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          {/* Logo ve Sosyal Medya */}
+          {/* Logo and Social Media */}
           <div className="flex flex-col gap-4 items-start">
             <Link href="/" className="text-xl font-bold">
               Blog App
             </Link>
             <p className="text-sm text-muted-foreground">
-              Web teknolojileri dersi için geliştirilmiş bir blog uygulaması.
+              A blog application developed for Web Technologies course.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((social) => (
@@ -83,7 +83,7 @@ export default function FooterClient({
             </div>
           </div>
 
-          {/* Footer Linkleri */}
+          {/* Footer Links */}
           {footerLinks.map((section) => (
             <div key={section.title} className="space-y-4">
               <h3 className="text-sm font-semibold">{section.title}</h3>
@@ -103,10 +103,10 @@ export default function FooterClient({
           ))}
         </div>
 
-        {/* Alt Bilgi */}
+        {/* Footer Info */}
         <div className="mt-12 border-t pt-6">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Blog App. Tüm hakları saklıdır.
+            © {new Date().getFullYear()} Blog App. All rights reserved.
           </p>
         </div>
       </div>

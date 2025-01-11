@@ -10,7 +10,7 @@ import { Edit } from "lucide-react";
 export default [
   {
     accessorKey: "name",
-    header: "Adı",
+    header: "Name",
     cell: ({ row }) => (
       <div className="flex flex-col">
         <span>{row.original.name}</span>
@@ -26,39 +26,39 @@ export default [
   },
   {
     accessorKey: "postCount",
-    header: "Gönderi Sayısı",
+    header: "Post Count",
     cell: ({ row }) => {
       return row.original._count.Post;
     },
   },
   {
     accessorKey: "createdAt",
-    header: "Oluşturulma Tarihi",
+    header: "Created At",
     cell: ({ row }) => {
       return format(row.original.createdAt, "dd.MM.yyyy HH:mm");
     },
   },
   {
     accessorKey: "updatedAt",
-    header: "Güncellenme Tarihi",
+    header: "Updated At",
     cell: ({ row }) => {
       return format(row.original.updatedAt, "dd.MM.yyyy HH:mm");
     },
   },
   {
     accessorKey: "role",
-    header: "Rol",
+    header: "Role",
     cell: ({ row }) => {
       return row.original.role === "ADMIN" ? (
         <Badge variant="default">Admin</Badge>
       ) : (
-        <Badge variant="outline">Kullanıcı</Badge>
+        <Badge variant="outline">User</Badge>
       );
     },
   },
   {
     accessorKey: "actions",
-    header: "İşlemler",
+    header: "Actions",
     cell: ({ row }) => {
       return (
         <Button

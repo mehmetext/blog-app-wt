@@ -21,8 +21,8 @@ import { z } from "zod";
 const categorySchema = z.object({
   name: z
     .string()
-    .min(2, "Kategori adı en az 2 karakter olmalıdır")
-    .max(50, "Kategori adı en fazla 50 karakter olabilir"),
+    .min(2, "Category name must be at least 2 characters")
+    .max(50, "Category name can be maximum 50 characters"),
 });
 
 type CategoryFormInput = z.infer<typeof categorySchema>;
@@ -51,13 +51,13 @@ export default function CategoryForm({
       await onSubmit(data);
       router.refresh();
       toast.success(
-        category ? "Kategori güncellendi" : "Kategori başarıyla oluşturuldu"
+        category ? "Category updated" : "Category created successfully"
       );
     } catch {
       toast.error(
         category
-          ? "Kategori güncellenirken bir hata oluştu"
-          : "Kategori oluşturulurken bir hata oluştu"
+          ? "An error occurred while updating the category"
+          : "An error occurred while creating the category"
       );
     } finally {
       setIsLoading(false);
@@ -72,9 +72,9 @@ export default function CategoryForm({
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Kategori Adı</FormLabel>
+              <FormLabel>Category Name</FormLabel>
               <FormControl>
-                <Input placeholder="Kategori adı" {...field} />
+                <Input placeholder="Category name" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -84,11 +84,11 @@ export default function CategoryForm({
         <Button type="submit" disabled={isLoading}>
           {isLoading
             ? category
-              ? "Güncelleniyor..."
-              : "Oluşturuluyor..."
+              ? "Updating..."
+              : "Creating..."
             : category
-            ? "Güncelle"
-            : "Oluştur"}
+            ? "Update"
+            : "Create"}
         </Button>
       </form>
     </Form>

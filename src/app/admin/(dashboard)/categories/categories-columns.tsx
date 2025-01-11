@@ -18,7 +18,7 @@ export default function categoriesColumns({
   return [
     {
       accessorKey: "name",
-      header: "Adı",
+      header: "Name",
       cell: ({ row }) => (
         <div className="flex flex-col">
           <span>{row.original.name}</span>
@@ -36,39 +36,39 @@ export default function categoriesColumns({
     },
     {
       id: "posts",
-      header: "Gönderi Sayısı",
+      header: "Post Count",
       cell: ({ row }) => {
         return row.original._count.posts;
       },
     },
     {
       accessorKey: "createdAt",
-      header: "Oluşturulma Tarihi",
+      header: "Created At",
       cell: ({ row }) => {
         return format(row.original.createdAt, "dd.MM.yyyy HH:mm");
       },
     },
     {
       accessorKey: "updatedAt",
-      header: "Güncellenme Tarihi",
+      header: "Updated At",
       cell: ({ row }) => {
         return format(row.original.updatedAt, "dd.MM.yyyy HH:mm");
       },
     },
     {
       accessorKey: "status",
-      header: "Durum",
+      header: "Status",
       cell: ({ row }) => {
         return row.original.deletedAt ? (
-          <Badge variant="destructive">Silindi</Badge>
+          <Badge variant="destructive">Deleted</Badge>
         ) : (
-          <Badge variant="outline">Aktif</Badge>
+          <Badge variant="outline">Active</Badge>
         );
       },
     },
     {
       accessorKey: "actions",
-      header: "İşlemler",
+      header: "Actions",
       cell: ({ row }) => {
         return (
           <CategoryDialog

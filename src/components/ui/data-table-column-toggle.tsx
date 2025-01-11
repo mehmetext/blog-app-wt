@@ -34,11 +34,11 @@ export function DataTableViewOptions<TData>({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm">
               <MoreVertical />
-              İşlemler ({table.getFilteredSelectedRowModel().rows.length})
+              Actions ({table.getFilteredSelectedRowModel().rows.length})
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[200px]">
-            <DropdownMenuLabel>İşlemler</DropdownMenuLabel>
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {operations?.map((operation) => (
               <DropdownMenuItem
@@ -60,11 +60,11 @@ export function DataTableViewOptions<TData>({
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm">
             <Settings2 />
-            Görünüm
+            View
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[150px]">
-          <DropdownMenuLabel>Sütunları Gizle/Göster</DropdownMenuLabel>
+          <DropdownMenuLabel>Show/Hide Columns</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {table
             .getAllColumns()
@@ -109,20 +109,20 @@ export function DataTableViewOptions<TData>({
               // Fallback translations for common column IDs
               if (columnLabel === column.id) {
                 const translations: Record<string, string> = {
-                  content: "İçerik",
-                  authorName: "Yazar Adı",
-                  postTitle: "Gönderi Başlığı",
-                  createdAt: "Oluşturulma Tarihi",
-                  updatedAt: "Güncellenme Tarihi",
-                  status: "Durum",
-                  actions: "İşlemler",
-                  title: "Başlık",
-                  category: "Kategori",
-                  author: "Yazar",
-                  comments: "Yorumlar",
-                  coverImage: "Resim",
-                  deletedAt: "Silinme Tarihi",
-                  isFeatured: "Öne Çıkan",
+                  content: "Content",
+                  authorName: "Author Name",
+                  postTitle: "Post Title",
+                  createdAt: "Created At",
+                  updatedAt: "Updated At",
+                  status: "Status",
+                  actions: "Actions",
+                  title: "Title",
+                  category: "Category",
+                  author: "Author",
+                  comments: "Comments",
+                  coverImage: "Image",
+                  deletedAt: "Deleted At",
+                  isFeatured: "Featured",
                 };
                 columnLabel = translations[column.id] || columnLabel;
               }

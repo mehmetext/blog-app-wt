@@ -14,7 +14,7 @@ export default function AdminToolbar({ user }: { user: User }) {
   return (
     <div className="bg-secondary text-secondary-foreground h-12 flex items-center">
       <div className="container flex items-center gap-2">
-        <Small>Hoş geldin, {user.name}:</Small>
+        <Small>Welcome, {user.name}:</Small>
         <Link
           href="/admin"
           className={cn(
@@ -23,7 +23,7 @@ export default function AdminToolbar({ user }: { user: User }) {
           )}
         >
           <ShieldAlert />
-          Admin Paneli
+          Admin Panel
         </Link>
         <Link
           href="/admin"
@@ -44,7 +44,7 @@ export default function AdminToolbar({ user }: { user: User }) {
           }}
         >
           <LogOut />
-          Çıkış Yap
+          Logout
         </Button>
         <Button
           onClick={async () => {

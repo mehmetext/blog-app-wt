@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default function About() {
   return (
     <PageContainer>
-      <BreadcrumbNav items={[{ label: "Hakkımızda", href: "/about" }]} />
+      <BreadcrumbNav items={[{ label: "About", href: "/about" }]} />
       About
     </PageContainer>
   );

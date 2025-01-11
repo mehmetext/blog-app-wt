@@ -31,17 +31,17 @@ import { z } from "zod";
 export const postSchema = z.object({
   title: z
     .string()
-    .min(3, "Başlık en az 3 karakter olmalıdır")
-    .max(100, "Başlık en fazla 100 karakter olabilir"),
+    .min(3, "Title must be at least 3 characters")
+    .max(100, "Title can be maximum 100 characters"),
   content: z
     .string()
-    .min(10, "İçerik en az 10 karakter olmalıdır")
-    .max(10000, "İçerik en fazla 10000 karakter olabilir"),
-  categoryId: z.string().min(1, "Kategori seçmelisiniz"),
+    .min(10, "Content must be at least 10 characters")
+    .max(10000, "Content can be maximum 10000 characters"),
+  categoryId: z.string().min(1, "Please select a category"),
   coverImage: z
     .string()
-    .url("Geçerli bir URL girmelisiniz")
-    .min(1, "Kapak görseli URL'si girmelisiniz"),
+    .url("Please enter a valid URL")
+    .min(1, "Please enter a cover image URL"),
 });
 
 export type PostFormInput = z.infer<typeof postSchema>;
@@ -69,17 +69,17 @@ export default function PostForm({ categories, post }: PostFormProps) {
       setIsLoading(true);
       if (post) {
         await updatePost(post.id, data);
-        toast.success("Gönderi başarıyla güncellendi");
+        toast.success("Post updated successfully");
       } else {
         await createPost(data);
-        toast.success("Gönderi başarıyla oluşturuldu");
+        toast.success("Post created successfully");
       }
       router.push("/admin/posts");
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
-        toast.error("Bir hata oluştu");
+        toast.error("An error occurred");
       }
     } finally {
       setIsLoading(false);
@@ -96,9 +96,9 @@ export default function PostForm({ categories, post }: PostFormProps) {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Başlık</FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="Gönderi başlığı" {...field} />
+                    <Input placeholder="Post title" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -110,14 +110,14 @@ export default function PostForm({ categories, post }: PostFormProps) {
               name="categoryId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Kategori</FormLabel>
+                  <FormLabel>Category</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Kategori seçin" />
+                        <SelectValue placeholder="Select a category" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -138,7 +138,7 @@ export default function PostForm({ categories, post }: PostFormProps) {
               name="coverImage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Kapak Görseli URL</FormLabel>
+                  <FormLabel>Cover Image URL</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="https://example.com/image.jpg"
@@ -155,10 +155,10 @@ export default function PostForm({ categories, post }: PostFormProps) {
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>İçerik</FormLabel>
+                  <FormLabel>Content</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Gönderi içeriği"
+                      placeholder="Post content"
                       className="min-h-[300px]"
                       {...field}
                     />
@@ -171,11 +171,11 @@ export default function PostForm({ categories, post }: PostFormProps) {
             <Button type="submit" disabled={isLoading}>
               {isLoading
                 ? post
-                  ? "Güncelleniyor..."
-                  : "Oluşturuluyor..."
+                  ? "Updating..."
+                  : "Creating..."
                 : post
-                ? "Güncelle"
-                : "Oluştur"}
+                ? "Update"
+                : "Create"}
             </Button>
           </form>
         </Form>

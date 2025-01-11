@@ -21,23 +21,23 @@ export function PaginationControls({
   totalPages,
   generatePageUrl,
 }: PaginationControlsProps) {
-  // Sayfa numaralarını oluşturan yardımcı fonksiyon
+  // Helper function to generate page numbers
   const getPageNumbers = () => {
     const pages: (number | "ellipsis")[] = [];
 
     if (totalPages <= 7) {
-      // 7 veya daha az sayfa varsa hepsini göster
+      // If there are 7 or fewer pages, show all
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
-    // İlk sayfayı her zaman göster
+    // Always show first page
     pages.push(1);
 
     if (currentPage > 3) {
       pages.push("ellipsis");
     }
 
-    // Mevcut sayfanın etrafındaki sayfaları göster
+    // Show pages around current page
     for (
       let i = Math.max(2, currentPage - 1);
       i <= Math.min(totalPages - 1, currentPage + 1);
@@ -50,7 +50,7 @@ export function PaginationControls({
       pages.push("ellipsis");
     }
 
-    // Son sayfayı her zaman göster
+    // Always show last page
     if (totalPages > 1) {
       pages.push(totalPages);
     }
